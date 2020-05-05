@@ -14,34 +14,7 @@ It's an API that serves data  and allows the React Application to manage databas
 ​
 Connect the community of neighbours by helping each other with his knowledge.
 ​
-## User Stories
-​
-**404** - As a user I want to see a nice 404 page when I go to a page that doesn’t exist so that I know it was my fault
- 
-**500** - As a user I want to see a nice error page when the super team screws it up so that I know that is not my fault
- 
-**Homepage** - As a user I want to be able to access the homepage so that I see what the app is about and login and signup
- 
-**Sign up** - As a user I want to sign up on the webpage so that I can see all the events that I could attend
- 
-**Login** - As a user I want to be able to log in on the webpage so that I can get back to my account
- 
-**Logout** - As a user I want to be able to log out from the webpage so that I can make sure no one will access my account
- 
-**Ad list** - As a user I want to see all the ads available so that I can choose which ones I want to hire.
- 
-**Ad create** - As a user I want to create an ad so that I can offer my services to others.
- 
-**Ad detail** - As a user I want to see the ad details and been able to contact the Publisher
- 
-**Hire Ad** - As a user I want to be able to hire an Ad.
- 
-**Chat** - AS a User I want to be able to chat with other users to negotiate the conditions of the ad.
- 
-**Buy Tokens** - As a User I want to be able to buy more tokens.
- 
-**Rewards Page** - As a User I want to see my own level and the next rewards I will have and the statistics of my user.
-​
+
 ​
 ## Backlog
 ​
