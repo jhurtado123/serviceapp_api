@@ -33,17 +33,27 @@ Backoffice: allow the root users to manage the information from a backend admini
 |  POST  | `/signup` 				| signup a user    | `{ username, password }` |
 |  POST  | `/login`  				| login a user     | `{ username, password }` |
 |  GET   | `/logout` 				| logout session   |                          |
-|	 GET	 | `/home` 					| homepage         | 				                  |
+|	 GET	 | `/home` 					| home        | 				                  |
 |  GET   | `/search` 				| search page      | 	`{filters }`            |
 |  GET   | `/ad/:id` 				| ad details       |          		        		|
+|  POST   | `/ad/:id` 				| create ad       |      {adData}    		        		|
+|  PUT   | `/ad/:id` 				| edit ad       |      {adData}    		        		|
+|  DELETE   | `/ad/:id` 				| delete ad       |        		        		|
 |  GET   | `/chats`  				| chat list        |          		            |	
 |  GET   | `/chat/:id`			| chat page        |          		            |   
+|  POST   | `/chat/:id`			| create chat        |          		            |   
+|  PUT   | `/chat/:id`			| edit chat        |    {chatData}      		            |
+|  GET   | `/appointment/:id`			| appointment details       |          		            |
+|  POST   | `/appointment`			| create appointment       |          		            |
+|  PUT   | `/appointment/:id`			| edit appointment       |          		            |
+|  POST   | `/review/:chatId`			| add review      |          		            | 
+|  POST   | `/mediation/:chatId`			| create mediation     |          		            |   
 |  GET   | `/profile/:id`		| users profile    |  				   					    |
 |  GET   | `/profile/edit` 	| edit user profile|                          |
 |  PUT   | `/profile/edit`  | edit user profile| {userData}               |
 |  PUT   | `/ad/:id/edit`   | edit ad   			 | {adData}                 |
 |  PUT   | `/ad/:id/edit`   | edit ad          | {adData}                 |
-|  GET   | `/rewards`       | rewards page   	 |  				                |
+|  GET   | `/rewards`       | rewards    	 |  				                |
 ​
 ### Endpoints Backoffice 
 *All theese routes has /admin before route
@@ -77,6 +87,9 @@ User model
 	description: String,
 	level: Number,
 	address: String,
+	wallet: {
+		tokens: Number,
+	}
 	review: {
 		content: String,
 		rating: Number (1-5),
@@ -101,25 +114,27 @@ Ad model
 	category: Array,
 	image: String,
 	deletedad: DateTime,
-	Appointment: {
-		date: DateTime
-		saler: ObjectId<User>
-		buyer: ObjectId<User>
-		status: String
-	} 
+
 }
 ```
+
+Appointment Model
+{
+	date: DateTime
+	saler: ObjectId<User>
+	buyer: ObjectId<User>
+	status: String
+	} 
+
 ​
-Wallet model
+Exchange model
 ​
 ```javascript
 {
-	owner: ObjectId<User>,
-	tokens: Number,
-	history: [{ 
-		chatid: ObjectId<Chat>,
-		tokens: Number,
-	}]
+	seller: ObjectId<User>,
+	buyer: ObjectId<User>,
+	totalPrice: Number,
+	timestamps : {}
 }
 ```
 ​
