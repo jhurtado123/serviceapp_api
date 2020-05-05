@@ -34,7 +34,7 @@ Backoffice: allow the root users to manage the information from a backend admini
 |  POST  | `/login`  				| login a user     | `{ username, password }` |
 |  GET   | `/logout` 				| logout session   |                          |
 |	 GET	 | `/home` 					| home        | 				                  |
-|  GET   | `/search` 				| search page      | 	`{filters }`            |
+|  GET   | `/search` 				| search       | 	`{filters }`            |
 |  GET   | `/ad/:id` 				| ad details       |          		        		|
 |  POST   | `/ad/:id` 				| create ad       |      {adData}    		        		|
 |  PUT   | `/ad/:id` 				| edit ad       |      {adData}    		        		|
