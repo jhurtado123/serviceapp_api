@@ -18,6 +18,13 @@ mongoose
   });
 
 const app = express();
+app.use(
+  cors({
+    credentials: true,
+    origin: [process.env.FRONTEND_DOMAIN],
+  })
+);
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
