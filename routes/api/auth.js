@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 
+const { checkUsernameAndPasswordNotEmpty } = require('../../middlewares');
+
 const User = require("../../models/User");
 
 router.get('/whoami', (req, res, next) => {
@@ -12,8 +14,8 @@ router.get('/whoami', (req, res, next) => {
   }
 });
 
-router.post('/signup', async (req, res, next) => {
-  const { username, password } = req.body;
+router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
+  const { username, password, name, postalcode } = req.body;
   try {
     const user = await User.findOne({ username});
     if (user) {
@@ -25,6 +27,8 @@ router.post('/signup', async (req, res, next) => {
     const newUser = await User.create({
       username,
       password: hash,
+      name,
+      postalcode,
     });
     req.session.currentUser = newUser;
     return res.json(newUser);
@@ -33,7 +37,7 @@ router.post('/signup', async (req, res, next) => {
   }
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
   const { username, userpassword } = req.body;
   try {
     const user = await User.findOne({username});

@@ -12,6 +12,8 @@ const userSchema = new  Schema (
     description: String,
     level:  Number,
     address: String,
+    postalcode: String,
+    city: String,
     wallet: {
       tokens: Number,
     },
