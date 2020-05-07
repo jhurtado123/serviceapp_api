@@ -10,6 +10,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const indexRouter = require('./routes/api/index');
 const usersRouter = require('./routes/api/users');
+const authRouter = require("./routes/api/auth");
+
 
 mongoose
   .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
@@ -21,7 +23,6 @@ mongoose
   });
 
 const app = express();
-const authRouter = require("./routes/api/auth");
 app.use(
   cors({
     credentials: true,
@@ -72,5 +73,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+app.listen(process.env.PORT, ()=> {console.log('running in port 3000')});
 
 module.exports = app;
