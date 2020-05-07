@@ -33,7 +33,6 @@ Backoffice: allow the root users to manage the information from a backend admini
 |  POST  | `/signup` 				| signup a user    | `{ username, password }` |
 |  POST  | `/login`  				| login a user     | `{ username, password }` |
 |  GET   | `/logout` 				| logout session   |                          |
-|	 GET	 | `/home` 					| home        | 				                  |
 |  GET   | `/search` 				| search       | 	`{filters }`            |
 |  GET   | `/ad/:id` 				| ad details       |          		        		|
 |  POST   | `/ad/:id` 				| create ad       |      {adData}    		        		|
@@ -106,8 +105,8 @@ Ad model
 	name: String,
 	description: String,
 	coords: { 
-		lat: Number,
-		lng: Number,
+	 type: 'Point', 
+	 coordinates: [lat: Number,lng: Number] 	
 	}
 	price: Number,
 	tags: Array,
