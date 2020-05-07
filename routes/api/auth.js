@@ -10,7 +10,7 @@ router.get('/whoami', (req, res, next) => {
   if(req.session.currentUser) {
     res.status(200).json(req.session.currentUser)
   } else {
-    res.status(401).json({code:'not-authorized'})
+    res.status(401).json({data:'not-authorized'})
   }
 });
 
@@ -19,7 +19,7 @@ router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) 
   try {
     const user = await User.findOne({ username});
     if (user) {
-      return res.status(422).json({ code: 'username-not-unique'})
+      return res.status(422).json({ data: 'El nombre de usuario ya existe' })
     }
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
@@ -30,7 +30,7 @@ router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) 
       name,
       postalcode,
     });
-    req.session.currentUser = newUser;
+    return res.status(200).json(newUser);
     return res.json(newUser);
   } catch (error) {
     next(error)
@@ -40,15 +40,21 @@ router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) 
 router.post('/login', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
   const { username, userpassword } = req.body;
   try {
-    const user = await User.findOne({username});
-    if(!user) {
-      return res.status(404).json({ code: 'user-not-found'});
-    }
-    if (bcrypt.compareSync(userpassword, user.password)) {
-      req.session.currentUser = user;
-      return res.json(user);
-    }
-    return res.status(404).json({ code: "user-not-found" });
+    User.findOne({username})
+      .then(user => {
+        if(!user) {
+          return res.status(404).json({ data: 'Nombre de usuario o contraseña incorrectos.'});
+        }
+        if (bcrypt.compareSync(password, user.password)) {
+          req.session.currentUser = user;
+          return res.status(200).json(user);
+        } else {
+          return res.status(404).json({ data: 'Nombre de usuario o contraseña incorrectos.'});
+        }
+      })
+      .catch(error => {
+        return res.status(404).json({ data: "user-not-found" });
+      });
   } catch (error){ 
     next(error)
   }
