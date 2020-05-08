@@ -110,7 +110,7 @@ Ad model
 	}
 	price: Number,
 	tags: Array,
-	category: Array,
+	category: Category entity,
 	image: String,
 	deletedad: DateTime,
 
