@@ -31,7 +31,6 @@ router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) 
       postalcode,
     });
     return res.status(200).json(newUser);
-    return res.json(newUser);
   } catch (error) {
     next(error)
   }
