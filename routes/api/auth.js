@@ -2,9 +2,8 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 
-const { checkUsernameAndPasswordNotEmpty } = require("../../middlewares");
-
-const mapboxApiClient = require ("../../services/mapbox");
+const { checkUsernameAndPasswordNotEmpty } = require('../../middlewares/authMiddleware');
+const mapboxApiClient = require("../../services/mapbox");
 
 const User = require("../../models/User");
 
@@ -27,7 +26,7 @@ router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) 
     const hash = bcrypt.hashSync(password, salt);
     
     const city = await mapboxApiClient.getCity(postalcode)
-
+    
     console.log(city)
 
     const newUser = await User.create({
@@ -36,8 +35,23 @@ router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) 
       name,
       postalcode,
     });
+    req.session.currentUser = newUser;
     return res.status(200).json(newUser);
   } catch (error) {
+    return res.status(500).json({data: 'Server error'});
+  }
+});
+
+router.post('/doesUsernameExist', async (req, res, next) => {
+  const {username} = req.body;
+  try {
+    const user = await User.findOne({username});
+    if (user) {
+      return res.status(200).json({data: true});
+    } else {
+      return res.status(200).json({data: false});
+    }
+  } catch (e) {
     return res.status(500).json({data: 'Server error'});
   }
 });

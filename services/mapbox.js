@@ -1,4 +1,4 @@
-import axios from 'axios';
+const axios = require("axios");
 
 class MapBoxApiClient {
   constructor() {
@@ -9,10 +9,10 @@ class MapBoxApiClient {
 
   getCity(postalcode) {
     return this.apiClient.get(
-      `/${postalcode}json?access_token=pk.eyJ1Ijoiamh1cnRhZG8xMjMiLCJhIjoiY2s3dGlqZWtlMHFveTNvbjF1bjJxYTg2ayJ9.zbzGWyoeQ52ddJTrK2gjdA`
+      `/${postalcode}.json?access_token=${process.env.MAPBOX_TOKEN}&country=es`
     );
   }
 }
 
 const mapboxApiClient = new MapBoxApiClient();
-export default mapboxApiClient;
+module.exports = { mapboxApiClient};
