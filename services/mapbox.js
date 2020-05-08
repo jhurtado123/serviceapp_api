@@ -6,13 +6,15 @@ class MapBoxApiClient {
       baseURL: process.env.MAPBOX_URI,
     });
   }
-
+  getText(){
+    console.log("Hola")
+  }
   getCity(postalcode) {
     return this.apiClient.get(
-      `/${postalcode}.json?access_token=${process.env.MAPBOX_TOKEN}&country=es`
+      `/${postalcode}.json?access_token=${process.env.MAPBOX_TOKEN}&limit=1&country=es`
     );
   }
 }
 
 const mapboxApiClient = new MapBoxApiClient();
-module.exports = { mapboxApiClient};
+module.exports = mapboxApiClient;
