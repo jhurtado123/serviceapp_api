@@ -7,8 +7,11 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const logger = require('morgan');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const indexRouter = require('./routes/api/index');
 const usersRouter = require('./routes/api/users');
+const authRouter = require("./routes/api/auth");
+
 
 mongoose
   .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
@@ -20,7 +23,13 @@ mongoose
   });
 
 const app = express();
-const authRouter = require("./routes/api/auth");
+app.use(
+  cors({
+    credentials: true,
+    origin: [process.env.FRONTEND_DOMAIN],
+  })
+);
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -43,7 +52,7 @@ app.use(
     name: 'serkens',
     cookie: {
       maxAge: 24 * 60 * 60 * 1000
-    }, 
+    },
   })
 );
 app.use('/', authRouter);
