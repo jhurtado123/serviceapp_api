@@ -19,7 +19,8 @@
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "mongoose": "^5.9.12",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "multer": "^1.4.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.3"

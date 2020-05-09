@@ -52,13 +52,15 @@ router.post('/doesUsernameExist', async (req, res, next) => {
 });
 
 router.post('/login', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
-  const { username, userpassword } = req.body;
+  const { username, password } = req.body;
   try {
     const user = await User.findOne({username});
     if (!user) {
       return res.status(404).json({data: 'Nombre de usuario o contraseña incorrectos.'});
     }
     if (bcrypt.compareSync(password, user.password)) {
+      console.log(username);
+
       req.session.currentUser = user;
       return res.status(200).json(user);
     } else {
