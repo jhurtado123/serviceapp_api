@@ -8,6 +8,18 @@ const userSchema = new  Schema (
     password: {type: String, required: true },
     name: { type: String },
     role: [],
+    location: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        default: 'Point',
+        required: true
+      },
+      coordinates: [{
+        type: [Number],
+        required: true
+      }]
+    },
     profile_image: String,
     description: String,
     points: { type: Number, default: 0},

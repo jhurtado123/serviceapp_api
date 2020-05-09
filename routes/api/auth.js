@@ -19,26 +19,24 @@ router.get('/whoami', (req, res, next) => {
 router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) => {
   const { username, password, name, postalcode } = req.body;
   try {
-
     const user = await User.findOne({ username});
     if (user) {
       return res.status(422).json({ data: 'El nombre de usuario ya existe' })
     }
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
-    
-    const city = await mapboxApiClient.getCity(postalcode)
-      .then(response => {
-      return response.data.features[0].context[0].text
+
+    const userCoordinates = await mapboxApiClient.getCoordsByPostalCode(postalcode)
+      .then((response) => {
+          return response.data.features[0].geometry.coordinates;
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch(error => next(error));
 
     const newUser = await User.create({
       username,
       password: hash,
       name,
+      location: {coordinates: userCoordinates},
       postalcode,
       city: await mapboxApiClient
         .getCity(postalcode)
@@ -49,7 +47,6 @@ router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) 
     req.session.currentUser = newUser;
     return res.status(200).json(newUser);
   } catch (error) {
-    console.log(error)
     return res.status(500).json({data: 'Server error'});
   }
 });
