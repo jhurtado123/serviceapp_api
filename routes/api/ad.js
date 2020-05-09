@@ -25,6 +25,26 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
+router.delete('/:id', async (req, res, next) => {
+    const {id} = req.params;
+    try {
+       const ad =  await Ad.findOneAndUpdate({_id: id}, {deleted_at: new Date()})
+       return res.status(200).json(ad);
+    } catch {
+        next();
+    }
+});
+
+router.put('/:id/recover', async (req, res, next) => {
+    const {id} = req.params;
+    try {
+       const ad =  await Ad.findOneAndUpdate({_id: id}, {deleted_at: null})
+       return res.status(200).json(ad);
+    } catch {
+        next();
+    }
+});
+
 router.post('/', upload.any(), (req, res, next) => {
   const files = req.files;
   let {name, description, price, number, address, postalCode, category, lat, lng, tags} = req.body;
