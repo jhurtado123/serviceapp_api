@@ -11,7 +11,9 @@ const cors = require('cors');
 const indexRouter = require('./routes/api/index');
 const profileRouter = require('./routes/api/profile');
 const authRouter = require("./routes/api/auth");
-
+const adRouter = require('./routes/api/ad');
+const categoryRouter = require('./routes/api/categories');
+const autMiddleware = require('./middlewares/authMiddleware');
 
 mongoose
   .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
@@ -56,6 +58,13 @@ app.use(
   })
 );
 app.use('/', authRouter);
+app.use('/users', usersRouter);
+app.use('/categories', categoryRouter);
+
+//app.use(autMiddleware.checkIfLoggedIn);
+//Next routes will be privates
+app.use('/ad', adRouter);
+
 app.use('/profile', profileRouter);
 
 // catch 404 and forward to error handler
