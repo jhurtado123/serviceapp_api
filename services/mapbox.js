@@ -6,9 +6,11 @@ class MapBoxApiClient {
       baseURL: process.env.MAPBOX_URI,
     });
   }
-  getText(){
-    console.log("Hola")
+
+  getCoordsByPostalCode(postalCode) {
+    return this.apiClient.get(`/${postalCode}.json?access_token=${process.env.MAPBOX_TOKEN}&limit=1&country=es`);
   }
+
   getCity(postalcode) {
     return this.apiClient.get(
       `/${postalcode}.json?access_token=${process.env.MAPBOX_TOKEN}&limit=1&country=es`
