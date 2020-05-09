@@ -9,7 +9,7 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const indexRouter = require('./routes/api/index');
-const usersRouter = require('./routes/api/users');
+const profileRouter = require('./routes/api/profile');
 const authRouter = require("./routes/api/auth");
 const adRouter = require('./routes/api/ad');
 const categoryRouter = require('./routes/api/categories');
@@ -65,7 +65,7 @@ app.use('/categories', categoryRouter);
 //Next routes will be privates
 app.use('/ad', adRouter);
 
-
+app.use('/profile', profileRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -82,6 +82,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 
 module.exports = app;
