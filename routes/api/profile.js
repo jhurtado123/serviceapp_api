@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../../models/User');
+const Ad = require('../../models/Ad');
 const Level = require('../../models/Level');
 
 /* GET user */
@@ -31,5 +32,37 @@ router.get('/level', async (req, res, next) => {
     .catch((error) => {console.log(error)})
     
 })
+
+router.get('/ads', (req, res,next) => {
+  const user = req.session.currentUser;
+  if (!user) {
+    next();
+  }
+
+  Ad.find({owner: user._id, deleted_at: null})
+    .then(ads => {
+      return res.status(200).json({ads});
+    })
+    .catch(error => {
+      next(error);
+    })
+
+});
+
+router.get('/ads/removed', (req, res,next) => {
+  const user = req.session.currentUser;
+  if (!user) {
+    next();
+  }
+
+  Ad.find({owner: user._id, deleted_at: { $ne: null }})
+    .then(ads => {
+      return res.status(200).json({ads});
+    })
+    .catch(error => {
+      next(error);
+    })
+
+});
 
 module.exports = router;

@@ -15,25 +15,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage: storage});
 
-router.get('/:id/images', async (req, res, next) => {
-    const {id} = req.params;
-    const adDirectory = `./public/uploads/adImages/${id}`;
-    fs.readdir(adDirectory, function (err, files) {
-        if (err) {
-            return console.log('Unable to scan directory: ' + err);
-        }
-        files.forEach(function (file) {
-            console.log(file);
-        });
-    });
-    try {
-       const ad =  await Ad.findOne({_id: id})
-       return res.status(200).json({ad});
-    } catch {
-        next();
-    }
-});
-
 router.get('/:id', async (req, res, next) => {
     const {id} = req.params;
     try {
@@ -42,21 +23,45 @@ router.get('/:id', async (req, res, next) => {
     } catch {
         next();
     }
+});
 
+router.delete('/:id', async (req, res, next) => {
+    const {id} = req.params;
+    try {
+       const ad =  await Ad.findOneAndUpdate({_id: id}, {deleted_at: new Date()})
+       return res.status(200).json(ad);
+    } catch {
+        next();
+    }
+});
+
+router.put('/:id/recover', async (req, res, next) => {
+    const {id} = req.params;
+    try {
+       const ad =  await Ad.findOneAndUpdate({_id: id}, {deleted_at: null})
+       return res.status(200).json(ad);
+    } catch {
+        next();
+    }
 });
 
 router.post('/', upload.any(), (req, res, next) => {
-  let {name, description, price, number, address, postalCode, category, images, lat, lng, tags} = req.body;
+  const files = req.files;
+  let {name, description, price, number, address, postalCode, category, lat, lng, tags} = req.body;
 
   if (!name || !price || !category) {
     return res.status(400).json({data: 'Rellena los campos obligatorios antes de continuar.'});
   }
   tags = tags.split(',');
+
+  const images = [];
+  files.forEach(file => images.push(file.filename));
+
   const owner = req.session.currentUser;
 
-  Ad.create({name, owner: owner._id, description, price, category, tags, number, address, postalCode, location: {coordinates: [lat, lng] }})
+  Ad.create({name, owner: owner._id, description, price, category, tags, number, address, postalCode, location: {coordinates: [lat, lng] }, images})
     .then(ad => {
-          const files = req.files;
+
           const adDirectory = `./public/uploads/adImages/${ad._id}`;
           if (!fs.existsSync(adDirectory)){
                  fs.mkdirSync(adDirectory);
@@ -70,7 +75,43 @@ router.post('/', upload.any(), (req, res, next) => {
       return res.status(200).json({data: true});
     })
     .catch(error => {
-      console.log(error);
+      next();
+    })
+});
+
+router.put('/:id', upload.any(), (req, res, next) => {
+  const {id} = req.params;
+  const files = req.files;
+  let {name, description, price, number, address, postalCode, category, lat, lng, tags} = req.body;
+
+  if (!name || !price || !category) {
+    return res.status(400).json({data: 'Rellena los campos obligatorios antes de continuar.'});
+  }
+  tags = tags.split(',');
+
+  const images = [];
+  files.forEach(file => images.push(file.filename));
+
+  const owner = req.session.currentUser;
+
+  Ad.findOneAndUpdate({'_id': id}, {name, owner: owner._id, description, price, category, tags, number, address, postalCode, location: {coordinates: [lat, lng] }, images})
+    .then(ad => {
+
+          const adDirectory = `./public/uploads/adImages/${ad._id}`;
+           files.forEach(file => {
+                try {
+                    fs.readdirSync(adDirectory).forEach(file => {
+                      fs.unlinkSync(`${adDirectory}/${file}`);
+                    });
+                } catch (e) {}
+                fs.rename(file.path, `${adDirectory}/${file.filename}`, function (err) {
+                  if (err) next();
+                })
+           });
+
+      return res.status(200).json({data: true});
+    })
+    .catch(error => {
       next();
     })
 });
