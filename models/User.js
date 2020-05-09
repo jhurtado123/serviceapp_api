@@ -10,7 +10,7 @@ const userSchema = new  Schema (
     role: [],
     profile_image: String,
     description: String,
-    level:  Number,
+    points: { type: Number, default: 0},
     address: String,
     postalcode: String,
     city: String,
