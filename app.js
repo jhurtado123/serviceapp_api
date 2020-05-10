@@ -58,7 +58,7 @@ app.use(
   })
 );
 app.use('/', authRouter);
-app.use('/users', usersRouter);
+app.use('/profile', profileRouter);
 app.use('/categories', categoryRouter);
 
 //app.use(autMiddleware.checkIfLoggedIn);

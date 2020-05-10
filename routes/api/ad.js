@@ -75,4 +75,14 @@ router.post('/', upload.any(), (req, res, next) => {
     })
 });
 
+router.get('/user', (req, res, next) => {
+  const { currentUser } = req.session;
+  Ad.find({"owner": currentUser._id})
+    .then((ads) => {
+      return res.status(200).json(ads);
+    })
+    .catch((error) => {console.log(error)})
+})
+
+
 module.exports = router;

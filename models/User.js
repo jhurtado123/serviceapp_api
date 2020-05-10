@@ -17,10 +17,12 @@ const userSchema = new  Schema (
     wallet: {
       tokens: Number,
     },
-    review:  {
+    review:  [{
+      user: { type: Schema.Types.ObjectId, ref: 'User' },
+      ad: { type: Schema.Types.ObjectId, ref: 'Ad' },
       content:  String,
       rating: Number,
-    }
+    }],
   },
   {
 		timestamps: {
