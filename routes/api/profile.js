@@ -39,7 +39,7 @@ router.get('/ads', (req, res,next) => {
     next();
   }
 
-  Ad.find({owner: user._id, deleted_at: null})
+  Ad.find({owner: user._id, deleted_at: null}).populate('category')
     .then(ads => {
       return res.status(200).json({ads});
     })
@@ -55,7 +55,7 @@ router.get('/ads/removed', (req, res,next) => {
     next();
   }
 
-  Ad.find({owner: user._id, deleted_at: { $ne: null }})
+  Ad.find({owner: user._id, deleted_at: { $ne: null }}).populate('category')
     .then(ads => {
       return res.status(200).json({ads});
     })
