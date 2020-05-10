@@ -12,7 +12,7 @@ router.get('/', (req, res, next) => {
       res.status(200).json(user)
     })
     .catch((error) => {
-    return res.status(500).json({ data: 'Server error' });
+       return res.status(500).json({ data: 'Server error' });
     })
 });
 
@@ -27,7 +27,9 @@ router.get('/level', async (req, res, next) => {
     .then((level) => {
       return res.status(200).json(level)
     })
-    .catch((error) => {console.log(error)})
+    .catch((error) => {
+      next(error);
+    })
     
 })
 
