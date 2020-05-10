@@ -1,9 +1,14 @@
 var express = require('express');
+const { checkIfLoggedIn } = require('../../middlewares/authMiddleware');
+
 var router = express.Router();
 
+router.use(checkIfLoggedIn);
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+	res.status(200).json({
+		demo: 'Welcome this route is protected',
+  });
 });
 
 module.exports = router;
