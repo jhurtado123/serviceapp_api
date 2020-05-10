@@ -18,8 +18,19 @@ const upload = multer({storage: storage});
 router.get('/:id', async (req, res, next) => {
     const {id} = req.params;
     try {
-       const ad =  await Ad.findOne({_id: id})
+       const ad =  await Ad.findOne({_id: id}).populate('owner category')
        return res.status(200).json({ad});
+    } catch {
+        next();
+    }
+});
+
+router.get('/:id/withRelated', async (req, res, next) => {
+    const {id} = req.params;
+    try {
+       const ad =  await Ad.findOne({_id: id, deleted_at: null}).populate('owner category');
+       const relatedAds = await Ad.find({_id : {$ne: ad._id}, deleted_at: null}).populate('category').limit(5);
+       return res.status(200).json({ad, relatedAds});
     } catch {
         next();
     }
