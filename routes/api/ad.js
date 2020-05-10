@@ -41,8 +41,8 @@ router.delete('/:id', async (req, res, next) => {
     try {
        const ad =  await Ad.findOneAndUpdate({_id: id}, {deleted_at: new Date()})
        return res.status(200).json(ad);
-    } catch {
-        next();
+    } catch(error) {
+        next(error);
     }
 });
 
@@ -51,8 +51,8 @@ router.put('/:id/recover', async (req, res, next) => {
     try {
        const ad =  await Ad.findOneAndUpdate({_id: id}, {deleted_at: null})
        return res.status(200).json(ad);
-    } catch {
-        next();
+    } catch(error) {
+        next(error);
     }
 });
 
@@ -102,9 +102,7 @@ router.put('/:id', upload.any(), (req, res, next) => {
 
   const images = [];
   files.forEach(file => images.push(file.filename));
-
   const owner = req.session.currentUser;
-
   Ad.findOneAndUpdate({'_id': id}, {name, owner: owner._id, description, price, category, tags, number, address, postalCode, location: {coordinates: [lat, lng] }, images})
     .then(ad => {
 
@@ -123,6 +121,7 @@ router.put('/:id', upload.any(), (req, res, next) => {
       return res.status(200).json({data: true});
     })
     .catch(error => {
+        console.log(error);
       next();
     })
 });
