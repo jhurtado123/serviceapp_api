@@ -23,10 +23,8 @@ router.get('/level', async (req, res, next) => {
       return user.points;
     })
     .catch((error) => console.log(error))
-    console.log("Los puntos", userpoints)
     const level = await Level.find({ "maxpoints": {$gte: userpoints}, "minpoints": {$lte: userpoints}})
     .then((level) => {
-      console.log(level, userpoints)
       return res.status(200).json(level)
     })
     .catch((error) => {console.log(error)})
