@@ -3,6 +3,9 @@ const router = express.Router();
 const path = require('path');
 const multer  = require('multer');
 const Ad = require('../../models/Ad');
+const autMiddleware = require('../../middlewares/authMiddleware');
+const adMiddleware = require('../../middlewares/adMiddleware');
+
 const fs = require('fs');
 
 const storage = multer.diskStorage({
@@ -25,6 +28,16 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
+router.get('/:id/data', adMiddleware.isOwner, async (req, res, next) => {
+    const {id} = req.params;
+    try {
+       const ad =  await Ad.findOne({_id: id});
+       return res.status(200).json({ad});
+    } catch {
+        next();
+    }
+});
+
 router.get('/:id/withRelated', async (req, res, next) => {
     const {id} = req.params;
     try {
@@ -36,7 +49,7 @@ router.get('/:id/withRelated', async (req, res, next) => {
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', autMiddleware.checkIfLoggedIn, adMiddleware.isOwner, async (req, res, next) => {
     const {id} = req.params;
     try {
        const ad =  await Ad.findOneAndUpdate({_id: id}, {deleted_at: new Date()})
@@ -46,7 +59,7 @@ router.delete('/:id', async (req, res, next) => {
     }
 });
 
-router.put('/:id/recover', async (req, res, next) => {
+router.put('/:id/recover', autMiddleware.checkIfLoggedIn, adMiddleware.isOwner, async (req, res, next) => {
     const {id} = req.params;
     try {
        const ad =  await Ad.findOneAndUpdate({_id: id}, {deleted_at: null})
@@ -56,7 +69,7 @@ router.put('/:id/recover', async (req, res, next) => {
     }
 });
 
-router.post('/', upload.any(), (req, res, next) => {
+router.post('/', autMiddleware.checkIfLoggedIn, upload.any(), (req, res, next) => {
   const files = req.files;
   let {name, description, price, number, address, postalCode, category, lat, lng, tags} = req.body;
 
@@ -90,7 +103,7 @@ router.post('/', upload.any(), (req, res, next) => {
     })
 });
 
-router.put('/:id', upload.any(), (req, res, next) => {
+router.put('/:id', autMiddleware.checkIfLoggedIn,  adMiddleware.isOwner,  upload.any(), (req, res, next) => {
   const {id} = req.params;
   const files = req.files;
   let {name, description, price, number, address, postalCode, category, lat, lng, tags} = req.body;
@@ -105,7 +118,6 @@ router.put('/:id', upload.any(), (req, res, next) => {
   const owner = req.session.currentUser;
   Ad.findOneAndUpdate({'_id': id}, {name, owner: owner._id, description, price, category, tags, number, address, postalCode, location: {coordinates: [lat, lng] }, images})
     .then(ad => {
-
           const adDirectory = `./public/uploads/adImages/${ad._id}`;
            files.forEach(file => {
                 try {
@@ -121,8 +133,7 @@ router.put('/:id', upload.any(), (req, res, next) => {
       return res.status(200).json({data: true});
     })
     .catch(error => {
-        console.log(error);
-      next();
+      next(error);
     })
 });
 
@@ -132,7 +143,7 @@ router.get('/user', (req, res, next) => {
     .then((ads) => {
       return res.status(200).json(ads);
     })
-    .catch((error) => {console.log(error)})
+    .catch((error) => next(error))
 })
 
 
