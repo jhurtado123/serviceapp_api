@@ -24,6 +24,7 @@ const userSchema = new  Schema (
     description: String,
     points: { type: Number, default: 0},
     address: String,
+    number: Number,
     postalcode: String,
     city: String,
     wallet: {

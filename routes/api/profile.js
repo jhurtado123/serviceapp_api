@@ -1,8 +1,22 @@
 const express = require('express');
 const router = express.Router();
+const path = require("path");
+const multer = require("multer");
+const fs = require("fs");
 const User = require('../../models/User');
 const Ad = require('../../models/Ad');
 const Level = require('../../models/Level');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./public/uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
 
 /* GET user */
 router.get('/', (req, res, next) => {
@@ -32,6 +46,42 @@ router.get('/level', async (req, res, next) => {
     })
     
 })
+
+router.put("/edit", upload.any(), async (req, res, next) => {
+  const { currentUser } = req.session;
+  const files = req.files;
+  let { name, description, address, number, postalcode, lat, lng } = req.body;
+  const images = [];
+  files.forEach((file) => images.push(file.filename));
+
+  User.findOneAndUpdate(
+    { '_id': currentUser._id },
+    { name, description, address, number, postalcode, location: { coordinates: [lat, lng] }, 'profile_image': images[0] }
+    )
+    .then((user) => {
+      if(images[0] !== ''){
+        const profileDirectory = `./public/uploads/profile/${user._id}`;
+        if (!fs.existsSync(profileDirectory)) {
+          fs.mkdirSync(profileDirectory);
+        }
+        files.forEach(file => {
+          try {
+            fs.readdirSync(profileDirectory).forEach((file) => {
+              fs.unlinkSync(`${profileDirectory}/${file}`);
+            });
+            fs.rename(file.path, `${profileDirectory}/${file.filename}`, function (err) {
+              if (err) next();
+            })
+          } catch (e) {}
+      })
+    }
+      
+    return res.status(200).json({data: true});
+    })
+    .catch((error) => {
+      return next();
+    });
+  });
 
 router.get('/ads', (req, res,next) => {
   const user = req.session.currentUser;
