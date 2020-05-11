@@ -54,22 +54,27 @@ router.put("/edit", upload.any(), async (req, res, next) => {
 
   User.findOneAndUpdate(
     { '_id': currentUser._id },
-    { name, description, address, number, postalcode, lat, lng, 'profile_image': images[0] }
+    { name, description, address, number, postalcode, location: { coordinates: [lat, lng] }, 'profile_image': images[0] }
     )
     .then((user) => {
-
-      const profileDirectory = `./public/uploads/profile/${user._id}`;
-      files.forEach((file) => {
-        try {
-          fs.readdirSync(profileDirectory).forEach((file) => {
-            fs.unlinkSync(`${profileDirectory}/${file}`);
-          });
-        } catch (e) {}
-        fs.rename(file.path, `${profileDirectory}/${file.filename}`, function (err) {
-          if (err) next();
-        })
-      });
-      return res.status(200).json({data: true});
+      if(images[0] !== ''){
+        const profileDirectory = `./public/uploads/profile/${user._id}`;
+        if (!fs.existsSync(profileDirectory)) {
+          fs.mkdirSync(profileDirectory);
+        }
+        files.forEach(file => {
+          try {
+            fs.readdirSync(profileDirectory).forEach((file) => {
+              fs.unlinkSync(`${profileDirectory}/${file}`);
+            });
+            fs.rename(file.path, `${profileDirectory}/${file.filename}`, function (err) {
+              if (err) next();
+            })
+          } catch (e) {}
+      })
+    }
+      
+    return res.status(200).json({data: true});
     })
     .catch((error) => {
       return next();
