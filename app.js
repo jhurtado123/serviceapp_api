@@ -12,6 +12,7 @@ const indexRouter = require('./routes/api/index');
 const profileRouter = require('./routes/api/profile');
 const authRouter = require("./routes/api/auth");
 const adRouter = require('./routes/api/ad');
+const searchRouter = require('./routes/api/search');
 const categoryRouter = require('./routes/api/categories');
 const autMiddleware = require('./middlewares/authMiddleware');
 
@@ -60,6 +61,7 @@ app.use(
 app.use('/', authRouter);
 app.use('/profile', profileRouter);
 app.use('/categories', categoryRouter);
+app.use('/search', searchRouter);
 
 //app.use(autMiddleware.checkIfLoggedIn);
 //Next routes will be privates
