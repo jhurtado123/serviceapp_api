@@ -6,6 +6,7 @@ const fs = require("fs");
 const User = require('../../models/User');
 const Ad = require('../../models/Ad');
 const Level = require('../../models/Level');
+const { checkIfLoggedIn } =  require('../../middlewares/authMiddleware');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -19,100 +20,77 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 /* GET user */
-router.get('/', (req, res, next) => {
-  const { currentUser } = req.session;
-  User.findById(currentUser._id)
-    .then(user => {
-      res.status(200).json(user)
-    })
-    .catch((error) => {
-       return res.status(500).json({ data: 'Server error' });
-    })
-});
+/*with whoami */
 
-router.get('/level', async (req, res, next) => {
+router.get('/level', checkIfLoggedIn, async (req, res, next) => {
     const { currentUser } = req.session;
-    const userpoints = await User.findById(currentUser._id)
-    .then((user) => {
-      return user.points;
-    })
-    .catch((error) => console.log(error))
-    const level = await Level.find({ "maxpoints": {$gte: userpoints}, "minpoints": {$lte: userpoints}})
-    .then((level) => {
+    try{
+      const { points } = await User.findById(currentUser._id)
+      console.log(points)
+      const level = await Level.find({ "maxpoints": {$gte: points}, "minpoints": {$lte: points}})
       return res.status(200).json(level)
-    })
-    .catch((error) => {
+    }
+    catch (error) {
       next(error);
-    })
+    }
     
 })
 
-router.put("/edit", upload.any(), async (req, res, next) => {
+router.put("/edit", upload.any(), checkIfLoggedIn, async (req, res, next) => {
   const { currentUser } = req.session;
   const files = req.files;
   let { name, description, address, number, postalcode, lat, lng } = req.body;
   const images = [];
   files.forEach((file) => images.push(file.filename));
 
-  User.findOneAndUpdate(
-    { '_id': currentUser._id },
-    { name, description, address, number, postalcode, location: { coordinates: [lat, lng] }, 'profile_image': images[0] }
-    )
-    .then((user) => {
-      if(images[0] !== ''){
-        const profileDirectory = `./public/uploads/profile/${user._id}`;
-        if (!fs.existsSync(profileDirectory)) {
-          fs.mkdirSync(profileDirectory);
-        }
-        files.forEach(file => {
-          try {
-            fs.readdirSync(profileDirectory).forEach((file) => {
-              fs.unlinkSync(`${profileDirectory}/${file}`);
-            });
-            fs.rename(file.path, `${profileDirectory}/${file.filename}`, function (err) {
-              if (err) next();
-            })
-          } catch (e) {}
-      })
-    }
-      
-    return res.status(200).json({data: true});
-    })
-    .catch((error) => {
-      return next();
-    });
-  });
-
-router.get('/ads', (req, res,next) => {
-  const user = req.session.currentUser;
-  if (!user) {
-    next();
+  try{
+    const user = await User.findOneAndUpdate(
+      { '_id': currentUser._id },
+      { name, description, address, number, postalcode, location: { coordinates: [lat, lng] }, 'profile_image': images[0] }
+      )
+        if(user.images[0] !== ''){
+          const profileDirectory = `./public/uploads/profile/${user._id}`;
+          if (!fs.existsSync(profileDirectory)) {
+            fs.mkdirSync(profileDirectory);
+          }
+          files.forEach(file => {
+            try {
+              fs.readdirSync(profileDirectory).forEach((file) => {
+                fs.unlinkSync(`${profileDirectory}/${file}`);
+              });
+              fs.rename(file.path, `${profileDirectory}/${file.filename}`, function (err) {
+                if (err) next();
+              })
+            } catch (e) {}
+        })
+      }
+    return res.status(200).json({user: true});
   }
-
-  Ad.find({owner: user._id, deleted_at: null}).populate('category')
-    .then(ads => {
-      return res.status(200).json({ads});
-    })
-    .catch(error => {
-      next(error);
-    })
-
+  catch (error) {
+    next(error);
+  }
 });
 
-router.get('/ads/removed', (req, res,next) => {
+router.get('/ads', checkIfLoggedIn, async (req, res,next) => {
   const user = req.session.currentUser;
-  if (!user) {
-    next();
+  try {
+    const ads = await Ad.find({owner: user._id, deleted_at: null}).populate('category')
+        return res.status(200).json({ads});
   }
+  catch (error) {
+    next(error);
+  }
+});
 
-  Ad.find({owner: user._id, deleted_at: { $ne: null }}).populate('category')
-    .then(ads => {
+router.get('/ads/removed', checkIfLoggedIn, async (req, res,next) => {
+  const user = req.session.currentUser;
+  try{
+    const ads = await Ad.find({owner: user._id, deleted_at: { $ne: null }}).populate('category')
       return res.status(200).json({ads});
-    })
-    .catch(error => {
-      next(error);
-    })
-
+  }
+  catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
