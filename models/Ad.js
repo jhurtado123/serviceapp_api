@@ -39,6 +39,7 @@ const adSchema = new  Schema (
 	} 
 );
 
+adSchema.index({location: '2dsphere'});
 const Ad = mongoose.model("Ad", adSchema);
 
 module.exports = Ad;
