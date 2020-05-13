@@ -29,7 +29,7 @@ router.post('/signup', checkUsernameAndPasswordNotEmpty, async (req, res, next) 
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
 
-    const userCoordinates = await mapboxApiClient.getCoordsByPostalCode(postalcode)
+    const userCoordinates = await mapboxApiClient.getCoordsByPostalCode(postalcode);
     coordsForUser = userCoordinates.data.features[0].geometry.coordinates;
 
     const cityPostalCode = await mapboxApiClient.getCity(postalcode)

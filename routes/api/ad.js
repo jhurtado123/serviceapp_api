@@ -114,7 +114,7 @@ router.put('/:id', autMiddleware.checkIfLoggedIn,  adMiddleware.isOwner,  upload
   files.forEach(file => images.push(file.filename));
   const owner = req.session.currentUser;
   try {
-    const ad = await Ad.findOneAndUpdate({'_id': id}, {name, owner: owner._id, description, price, category, tags, number, address, postalCode, location: {coordinates: [lat, lng] }, images})
+    const ad = await Ad.findOneAndUpdate({'_id': id}, {name, owner: owner._id, description, price, category, tags, number, address, postalCode, location: {type: 'Point', coordinates: [lat, lng] }, images})
     const adDirectory = `./public/uploads/adImages/${ad._id}`;
       try {
            fs.readdir(adDirectory, (err, files) => {
