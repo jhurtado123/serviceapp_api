@@ -144,7 +144,7 @@ router.put('/:id', autMiddleware.checkIfLoggedIn,  adMiddleware.isOwner,  upload
 router.get('/user', async (req, res, next) => {
   const { currentUser } = req.session;
   try{
-    const ads = await Ad.find({"owner": currentUser._id})
+    const ads = await Ad.find({"owner": currentUser._id}).populate("owner category");
       return res.status(200).json(ads);
   }
   catch (error) {
@@ -156,13 +156,13 @@ router.get('/user/:id', async (req, res, next) => {
   console.log(req.params)
   const { id } = req.params;
   try{
-    const ads = await Ad.find({"owner": id})
+    const ads = await Ad.find({ owner: id }).populate("owner category");
     return res.status(200).json(ads);
   }
   catch (error) {
     next(error);
   }
-
+const ad = await Ad.findOne({ _id: id, deleted_at: null })
 });
 
 
