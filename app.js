@@ -14,6 +14,7 @@ const authRouter = require("./routes/api/auth");
 const adRouter = require('./routes/api/ad');
 const searchRouter = require('./routes/api/search');
 const categoryRouter = require('./routes/api/categories');
+const chatRouter = require('./routes/api/chat');
 const autMiddleware = require('./middlewares/authMiddleware');
 
 mongoose
@@ -25,7 +26,9 @@ mongoose
     console.error('Error connecting to mongo', err)
   });
 
-const app = express();
+const app = module.exports = express();
+app.io = require('socket.io')();
+
 app.use(
   cors({
     credentials: true,
@@ -63,9 +66,8 @@ app.use('/profile', profileRouter);
 app.use('/categories', categoryRouter);
 app.use('/search', searchRouter);
 
-//app.use(autMiddleware.checkIfLoggedIn);
-//Next routes will be privates
 app.use('/ad', adRouter);
+app.use('/chats', chatRouter);
 
 
 // catch 404 and forward to error handler
