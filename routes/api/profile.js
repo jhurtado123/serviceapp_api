@@ -26,14 +26,12 @@ router.get('/level', checkIfLoggedIn, async (req, res, next) => {
     const { currentUser } = req.session;
     try{
       const { points } = await User.findById(currentUser._id)
-      console.log(points)
       const level = await Level.find({ "maxpoints": {$gte: points}, "minpoints": {$lte: points}})
       return res.status(200).json(level)
     }
     catch (error) {
       next(error);
     }
-    
 })
 
 router.put("/edit", upload.any(), checkIfLoggedIn, async (req, res, next) => {
@@ -41,14 +39,18 @@ router.put("/edit", upload.any(), checkIfLoggedIn, async (req, res, next) => {
   const files = req.files;
   let { name, description, address, number, postalcode, lat, lng } = req.body;
   const images = [];
-  files.forEach((file) => images.push(file.filename));
+  let profile_image= ''
+  files.forEach((file) => { 
+    images.push(file.filename)
+    profile_image= file.filename
+  });
+
 
   try{
     const user = await User.findOneAndUpdate(
       { '_id': currentUser._id },
-      { name, description, address, number, postalcode, location: { coordinates: [lat, lng] }, 'profile_image': images[0] }
+      { name, description, address, number, postalcode, profile_image, location: { coordinates: [lat, lng] }}
       )
-        if(user.images[0] !== ''){
           const profileDirectory = `./public/uploads/profile/${user._id}`;
           if (!fs.existsSync(profileDirectory)) {
             fs.mkdirSync(profileDirectory);
@@ -63,7 +65,6 @@ router.put("/edit", upload.any(), checkIfLoggedIn, async (req, res, next) => {
               })
             } catch (e) {}
         })
-      }
     return res.status(200).json({user: true});
   }
   catch (error) {
@@ -81,6 +82,17 @@ router.get('/ads', checkIfLoggedIn, async (req, res,next) => {
     next(error);
   }
 });
+
+router.get('/user/:username', async (req,res, nex) => {
+  const {username} = req.params;
+  try{
+    const user = await User.find({username})
+    return res.status(200).json({user})
+  }
+  catch (error) {
+    next(error);
+  }
+})
 
 router.get('/ads/removed', checkIfLoggedIn, async (req, res,next) => {
   const user = req.session.currentUser;

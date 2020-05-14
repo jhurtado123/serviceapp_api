@@ -28,7 +28,7 @@ const userSchema = new  Schema (
     postalcode: String,
     city: String,
     wallet: {
-      tokens: Number,
+      tokens: { type: Number, default: 0 },
     },
     review:  [{
       user: { type: Schema.Types.ObjectId, ref: 'User' },
