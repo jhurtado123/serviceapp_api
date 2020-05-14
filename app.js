@@ -27,7 +27,6 @@ mongoose
   });
 
 const app = module.exports = express();
-app.io = require('socket.io')();
 
 app.use(
   cors({

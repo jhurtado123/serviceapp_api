@@ -8,10 +8,10 @@ const chatSchema = new  Schema (
     buyer: {type: Schema.Types.ObjectId, ref: 'User'},
     seller : {type: Schema.Types.ObjectId, ref: 'User'},
     price: Number,
+    pendingTokens: Number,
     hasAppointment: {
       type: Boolean,
       default: false
-
     },
     deleted_at: {
       type: Date,

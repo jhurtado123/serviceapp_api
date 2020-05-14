@@ -3,10 +3,7 @@ const router = express.Router();
 const autMiddleware = require('../../middlewares/authMiddleware');
 const Chat = require('../../models/Chat');
 const Ad = require('../../models/Ad');
-const app = require('../../app');
 
-const io = require('socket.io')();
-app.socketIO = io;
 
 
 router.get('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
@@ -22,16 +19,6 @@ router.get('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   }
 });
 
-app.socketIO.on('connection', (socket) => {
-  socket.on('room:join', function (room) {
-    socket.join(room);
-  });
-  socket.on('chat:message', data => {
-    let isReaded = Object.keys(app.io.sockets.adapter.rooms[data.chatId].sockets).length > 1;
-    new Message({message: data.message, sender: data.sender, chat: data.chatId, isReaded}).save();
-    socket.in(data.chatId).emit('chat:message', data)
-  });
-});
 
 router.get('/:id', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   const {currentUser} = req.session;
