@@ -3,6 +3,7 @@ const router = express.Router();
 const path = require('path');
 const multer  = require('multer');
 const Ad = require('../../models/Ad');
+const User = require('../../models/User');
 const autMiddleware = require('../../middlewares/authMiddleware');
 const adMiddleware = require('../../middlewares/adMiddleware');
 
@@ -142,6 +143,19 @@ router.get('/user', async (req, res, next) => {
   catch (error) {
     next(error);
   }
+});
+
+router.get('/user/:id', async (req, res, next) => {
+  console.log(req.params)
+  const { id } = req.params;
+  try{
+    const ads = await Ad.find({"owner": id})
+    return res.status(200).json(ads);
+  }
+  catch (error) {
+    next(error);
+  }
+
 });
 
 
