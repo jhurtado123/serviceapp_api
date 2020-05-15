@@ -26,7 +26,6 @@ router.get('/level', checkIfLoggedIn, async (req, res, next) => {
     const { currentUser } = req.session;
     try{
       const { points } = await User.findById(currentUser._id)
-      console.log(points)
       const level = await Level.find({ "maxpoints": {$gte: points}, "minpoints": {$lte: points}})
       return res.status(200).json(level)
     }

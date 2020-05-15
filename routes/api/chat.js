@@ -26,7 +26,6 @@ router.get('/:id/messages', autMiddleware.checkIfLoggedIn, async (req, res, next
   const {id} = req.params;
   try {
     const messages = await Message.find({chat: id}).populate('chat');
-    console.log(messages);
     return res.status(200).json({messages});
 
   } catch (e) {
