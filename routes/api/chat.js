@@ -1,0 +1,65 @@
+const express = require("express");
+const router = express.Router();
+const autMiddleware = require('../../middlewares/authMiddleware');
+const Chat = require('../../models/Chat');
+const Ad = require('../../models/Ad');
+const Message = require('../../models/Message');
+
+
+
+
+router.get('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
+
+  const {currentUser} = req.session;
+  try {
+    const chats = await Chat.find({$or: [{buyer: currentUser}, {seller: currentUser}]});
+
+    return res.status(200).json({chats});
+
+  } catch (e) {
+    return next(e);
+  }
+});
+
+router.get('/:id/messages', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
+  const {currentUser} = req.session;
+  const {id} = req.params;
+  try {
+    const messages = await Message.find({chat: id}).populate('chat');
+    return res.status(200).json({messages});
+
+  } catch (e) {
+    return res.status(401).json({data: 'unauthorized'});
+  }
+});
+
+
+router.get('/:id', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
+  const {currentUser} = req.session;
+  const {id} = req.params;
+  try {
+    const chat = await Chat.findOne({_id: id, deleted_at: null, $or: [{buyer: currentUser}, {seller: currentUser}]}).populate('ad seller');
+
+    return res.status(200).json({chat});
+
+  } catch (e) {
+    return res.status(401).json({data: 'unauthorized'});
+  }
+});
+
+
+router.post('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
+  const {currentUser} = req.session;
+  const {adId} = req.body;
+  try {
+    const ad = await Ad.findOne({_id: adId});
+    const chat = await Chat.create({buyer: currentUser, seller: ad.owner, price: ad.price, ad});
+
+    return res.status(200).json({data: chat._id});
+
+  } catch (e) {
+    return res.status(401).json({data: 'unauthorized'});
+  }
+});
+
+module.exports = router;
