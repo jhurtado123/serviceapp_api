@@ -3,6 +3,8 @@ const router = express.Router();
 const autMiddleware = require('../../middlewares/authMiddleware');
 const Chat = require('../../models/Chat');
 const Ad = require('../../models/Ad');
+const Message = require('../../models/Message');
+
 
 
 
@@ -19,6 +21,19 @@ router.get('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   }
 });
 
+router.get('/:id/messages', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
+  const {currentUser} = req.session;
+  const {id} = req.params;
+  try {
+    const messages = await Message.find({chat: id}).populate('chat');
+    console.log(messages);
+    return res.status(200).json({messages});
+
+  } catch (e) {
+    return res.status(401).json({data: 'unauthorized'});
+  }
+});
+
 
 router.get('/:id', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   const {currentUser} = req.session;
@@ -32,6 +47,7 @@ router.get('/:id', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
     return res.status(401).json({data: 'unauthorized'});
   }
 });
+
 
 router.post('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   const {currentUser} = req.session;
