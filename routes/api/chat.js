@@ -12,9 +12,14 @@ router.get('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
 
   const {currentUser} = req.session;
   try {
-    const chats = await Chat.find({$or: [{buyer: currentUser}, {seller: currentUser}]});
-
-    return res.status(200).json({chats});
+    const response = [];
+    const chats = await Chat.find({$or: [{buyer: currentUser}, {seller: currentUser}]}).populate('ad seller buyer');
+    for (const chat of chats) {
+      let messagesFrom = chat.seller === currentUser ? chat.buyer._id : chat.seller._id;
+      const chatMessages = await Message.count({chat: chat._id, isReaded: false, sender: messagesFrom});
+      response.push({chat, unReadMessages: chatMessages});
+    }
+    return res.status(200).json({response});
 
   } catch (e) {
     return next(e);
@@ -38,7 +43,7 @@ router.get('/:id', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   const {currentUser} = req.session;
   const {id} = req.params;
   try {
-    const chat = await Chat.findOne({_id: id, deleted_at: null, $or: [{buyer: currentUser}, {seller: currentUser}]}).populate('ad seller');
+    const chat = await Chat.findOne({_id: id, deleted_at: null, $or: [{buyer: currentUser}, {seller: currentUser}]}).populate('ad seller buyer');
 
     return res.status(200).json({chat});
 
