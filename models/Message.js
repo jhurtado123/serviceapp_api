@@ -10,7 +10,10 @@ const messagetSchema = new  Schema (
       type: Boolean,
       default: false,
     },
-    content: String,
+    data: {
+      content: String,
+      status: Boolean,
+    },
     type: String,
   },
   {
