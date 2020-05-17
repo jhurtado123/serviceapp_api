@@ -21,6 +21,7 @@ const appointmentSchema = new  Schema (
     seller: {type: Schema.Types.ObjectId, ref: 'User'},
     buyer: {type: Schema.Types.ObjectId, ref: 'User'},
     ad: {type: Schema.Types.ObjectId, ref: 'Ad'},
+    chat: {type: Schema.Types.ObjectId, ref: 'Chat'},
     status: {
       type: String,
       default: 'active',
