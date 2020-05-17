@@ -111,7 +111,7 @@ router.put('/ad/:id', checkIfLoggedIn, async (req, res, next) => {
   const user = req.session.currentUser;
   try{
     const ad = await Ad.findOne({ _id: id })
-    const {recently_viewed} = await User.findOne({'_id': user._id})
+    const {recently_viewed} = await User.findOne({'_id': user._id});
     if(recently_viewed.length > 6){
       recently_viewed.shift()
     }
@@ -127,4 +127,17 @@ router.put('/ad/:id', checkIfLoggedIn, async (req, res, next) => {
     next(error);
   }
 })
+
+router.put('/buyTokens', async (req,res,next) => {
+  const {quantity} = req.body;
+  const {currentUser} = req.session;
+  try {
+    await User.findOneAndUpdate({_id: currentUser._id}, {$inc: {'wallet.tokens': quantity}});
+    return res.status(200).json({response: true});
+  }
+  catch (e) {
+    return next(e)
+  }
+
+});
 module.exports = router;
