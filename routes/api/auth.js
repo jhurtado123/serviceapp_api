@@ -8,8 +8,10 @@ const mapboxApiClient = require("../../services/mapbox");
 
 const User = require("../../models/User");
 
-router.get('/whoami', (req, res, next) => {
+router.get('/whoami', async (req, res, next) => {
   if (req.session.currentUser) {
+    const user = await User.findOne({_id: req.session.currentUser._id});
+    req.session.currentUser = user;
     res.status(200).json(req.session.currentUser)
   } else {
     res.status(401).json({data: 'not-authorized'})
