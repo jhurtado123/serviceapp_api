@@ -36,6 +36,7 @@ const userSchema = new  Schema (
       content:  String,
       rating: Number,
     }],
+    recently_viewed: [],
   },
   {
 		timestamps: {

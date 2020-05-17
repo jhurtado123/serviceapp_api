@@ -165,5 +165,34 @@ router.get('/user/:id', async (req, res, next) => {
 const ad = await Ad.findOne({ _id: id, deleted_at: null })
 });
 
+router.get('/getallads', async (req, res, next) => {
+  try {
+    const ads = await Ad.aggregate([
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'string'
+        }
+      },
+      {
+        $group: { 
+          _id: "$string",
+          "category": { $sum: 1 },
+          count: { $sum: 1 },
+        }
+      },
+      {
+        $sort : {count: -1}
+      }
+    ])
+    return res.status(200).json(ads)
+  }
+  catch (error) {
+    next(error);
+  }
+})
+
 
 module.exports = router;
