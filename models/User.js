@@ -37,6 +37,7 @@ const userSchema = new  Schema (
       rating: Number,
     }],
     recently_viewed: [],
+    favorites: [{ type: Schema.Types.ObjectId, ref: 'Ad' }],
   },
   {
 		timestamps: {
