@@ -97,7 +97,7 @@ router.get('/user/:username', async (req,res, nex) => {
 router.get('/ads/removed', checkIfLoggedIn, async (req, res,next) => {
   const user = req.session.currentUser;
   try{
-    const ads = await Ad.find({owner: user._id, deleted_at: { $ne: null }}).populate('category')
+    const ads = await Ad.find({owner: user._id, deleted_at: { $ne: null }}).populate('category');
       return res.status(200).json({ads});
   }
   catch (error) {
@@ -110,23 +110,22 @@ router.put('/ad/:id', checkIfLoggedIn, async (req, res, next) => {
   const {id} = req.params;
   const user = req.session.currentUser;
   try{
-    const ad = await Ad.findOne({ _id: id })
+    const ad = await Ad.findOne({ _id: id }).populate('category');
     const {recently_viewed} = await User.findOne({'_id': user._id});
     if(recently_viewed.length > 6){
-      recently_viewed.shift()
+      recently_viewed.pop()
     }
-    recently_viewed.push(ad)
+    recently_viewed.unshift(ad);
     const userUpdated = await User.findOneAndUpdate(
         { '_id': user._id },
       { recently_viewed: recently_viewed}
-    )
-    console.log(userUpdated)
+    );
     return res.status(200).json({ userUpdated });
   }
   catch (error) {
     next(error);
   }
-})
+});
 
 router.put('/buyTokens', async (req,res,next) => {
   const {quantity} = req.body;
