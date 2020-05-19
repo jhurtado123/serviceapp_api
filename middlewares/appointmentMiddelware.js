@@ -6,20 +6,18 @@ const Chat = require('../models/Chat');
 
 
 function changeAppointmentStatusIfFinished(req, res, next) {
-  return next();
+
+  if (!req.session.currentUser) return next();
+
   const userId = req.session.currentUser._id;
-  const now = new Date();
-  Appointment.find({'status': 'Activa', $or: [{'lesser': userId, date : {$lt: now}}, {'lessor': userId, date : {$lt: now}}]}).populate('lesser lessor')
+  let now = new Date();
+  now = new Date(now.setHours(now.getHours()+2));
+  Appointment.find({'status': 'active', $or: [{'buyer': userId, date : {$lt: now}}, {'seller': userId, date : {$lt: now}}]}).populate('buyer seller')
     .then(appointments => {
       appointments.forEach(appointment => {
-        appointment.status = 'Finalizada';
-        notification([appointment.lesser], {'title': `Tu cita con ${appointment.lessor.name} ha terminado. Dejale una valoración.`, 'href': `/review/${appointment._id}/create`});
+        appointment.status = 'finished';
+        //notification([appointment.lesser], {'title': `Tu cita con ${appointment.lessor.name} ha terminado. Dejale una valoración.`, 'href': `/review/${appointment._id}/create`});
         appointment.save();
-        Chat.findOne({ _id: appointment.chat._id })
-          .then(resultChat => {
-          resultChat.hasAppointment = false;
-          resultChat.save();
-        });
       });
       return next();
     })
