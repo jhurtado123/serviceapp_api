@@ -15,6 +15,8 @@ const adRouter = require('./routes/api/ad');
 const searchRouter = require('./routes/api/search');
 const categoryRouter = require('./routes/api/categories');
 const chatRouter = require('./routes/api/chat');
+const appointmentsRouter = require('./routes/api/appointment');
+const favoritesRouter = require('./routes/api/favorites');
 const autMiddleware = require('./middlewares/authMiddleware');
 
 mongoose
@@ -64,7 +66,9 @@ app.use('/', authRouter);
 app.use('/profile', profileRouter);
 app.use('/categories', categoryRouter);
 app.use('/search', searchRouter);
+app.use('/favorites', favoritesRouter);
 
+app.use('/appointments', appointmentsRouter);
 app.use('/ad', adRouter);
 app.use('/chats', chatRouter);
 

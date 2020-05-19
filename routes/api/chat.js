@@ -10,7 +10,6 @@ const createNofifications = require ('../../middlewares/notificationMiddleware')
 
 
 router.get('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
-
   const {currentUser} = req.session;
   try {
     const response = [];
@@ -44,6 +43,7 @@ router.get('/:id', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   const {currentUser} = req.session;
   const {id} = req.params;
   try {
+    await Message.update({chat: id, isReaded: false, sender: {$ne : currentUser}}, {$set: {isReaded: true}}, {"multi": true});
     const chat = await Chat.findOne({_id: id, deleted_at: null, $or: [{buyer: currentUser}, {seller: currentUser}]}).populate('ad seller buyer');
 
     return res.status(200).json({chat});
