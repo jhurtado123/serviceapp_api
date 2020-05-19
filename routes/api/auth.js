@@ -5,7 +5,6 @@ const axios = require("axios");
 
 const { checkUsernameAndPasswordNotEmpty } = require('../../middlewares/authMiddleware');
 const mapboxApiClient = require("../../services/mapbox");
-
 const User = require("../../models/User");
 
 router.get('/whoami', async (req, res, next) => {
@@ -89,7 +88,7 @@ router.post('/login', checkUsernameAndPasswordNotEmpty, async (req, res, next) =
 router.get('/logout', (req, res, next) => {
   req.session.destroy(error => {
     if (error) {
-      next(error)
+      next(error);
     }
     return res.status(204).send()
   })
