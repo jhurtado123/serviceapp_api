@@ -41,7 +41,6 @@ const userSchema = new Schema(
       },
     ],
     recently_viewed: [],
-<<<<<<< HEAD
     notifications: [
       {
         type: new mongoose.Schema(
@@ -57,9 +56,7 @@ const userSchema = new Schema(
         ),
       },
     ],
-=======
     favorites: [{ type: Schema.Types.ObjectId, ref: 'Ad' }],
->>>>>>> dev
   },
   {
     timestamps: {

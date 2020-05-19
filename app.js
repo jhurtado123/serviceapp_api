@@ -54,8 +54,8 @@ app.use(
       ttl: 24 * 60 * 60, // 1 day
     }),
     secret: "serkens",
-    resave: true,
-    saveUninitialized: false,
+    resave: false,
+    saveUninitialized: true,
     name: 'serkens',
     cookie: {
       maxAge: 24 * 60 * 60 * 1000
