@@ -18,6 +18,7 @@ const chatRouter = require('./routes/api/chat');
 const appointmentsRouter = require('./routes/api/appointment');
 const favoritesRouter = require('./routes/api/favorites');
 const autMiddleware = require('./middlewares/authMiddleware');
+const appointmentMiddleware = require('./middlewares/appointmentMiddelware');
 
 mongoose
   .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
@@ -51,17 +52,18 @@ app.use(
   session({
     store: new MongoStore({
       mongooseConnection: mongoose.connection,
-      ttl: 24 * 60 * 60, // 1 day
+      ttl: 24 * 60 * 60,
     }),
     secret: "serkens",
-    resave: true,
-    saveUninitialized: false,
+    resave: false,
+    saveUninitialized: true,
     name: 'serkens',
     cookie: {
       maxAge: 24 * 60 * 60 * 1000
     },
   })
 );
+app.use(appointmentMiddleware.changeAppointmentStatusIfFinished);
 app.use('/', authRouter);
 app.use('/profile', profileRouter);
 app.use('/categories', categoryRouter);
