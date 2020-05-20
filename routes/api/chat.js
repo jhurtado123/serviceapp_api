@@ -13,7 +13,7 @@ router.get('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   const {currentUser} = req.session;
   try {
     const response = [];
-    const chats = await Chat.find({$or: [{buyer: currentUser}, {seller: currentUser}]}).populate('ad seller buyer');
+    const chats = await Chat.find({$or: [{buyer: currentUser}, {seller: currentUser}]}).sort({createdAt: -1}).populate('ad seller buyer');
     for (const chat of chats) {
       let messagesFrom = chat.seller === currentUser ? chat.buyer._id : chat.seller._id;
       const chatMessages = await Message.count({chat: chat._id, isReaded: false, sender: messagesFrom});
