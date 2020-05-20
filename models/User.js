@@ -47,6 +47,7 @@ const userSchema = new Schema(
           {
             title: String,
             href: String,
+            type: String,
             isReaded: {
               type: Boolean,
               default: false,

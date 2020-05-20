@@ -127,12 +127,29 @@ router.put('/buyTokens', async (req, res, next) => {
   const {quantity} = req.body;
   const {currentUser} = req.session;
   try {
-    await User.findOneAndUpdate({_id: currentUser._id}, {$inc: {'wallet.tokens': quantity}});
+    await User.findOneAndUpdate({ _id: currentUser._id }, { $inc: { 'wallet.tokens': quantity } });
     return res.status(200).json({response: true});
   } catch (e) {
     return next(e)
   }
+  
+});
 
+
+router.put('/notifications/', checkIfLoggedIn, async (req, res, next) => {
+  const { currentUser } = req.session;
+  try {
+    const { notifications } = await User.findById({_id: currentUser._id})
+    for (let i = 0; i < notifications.length; i++) {
+      const notification = notifications[i];
+      notification.isReaded = true; 
+      
+    }
+    await User.findOneAndUpdate({_id: currentUser._id}, {notifications})
+    return res.status(200).json({ response: true });
+  } catch(e){
+    return next(e)
+  }
 });
 
 
