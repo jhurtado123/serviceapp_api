@@ -9,7 +9,10 @@ const User = require("../../models/User");
 
 router.get('/whoami', async (req, res, next) => {
   if (req.session.currentUser) {
-    const user = await User.findOne({_id: req.session.currentUser._id});
+    const user = await User.findOne({_id: req.session.currentUser._id}).populate({
+      path: 'recently_viewed.category',
+      model: 'Category'
+    });
     req.session.currentUser = user;
     res.status(200).json(req.session.currentUser)
   } else {
