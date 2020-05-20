@@ -12,8 +12,15 @@ const indexRouter = require('./routes/api/index');
 const profileRouter = require('./routes/api/profile');
 const authRouter = require("./routes/api/auth");
 const adRouter = require('./routes/api/ad');
+const searchRouter = require('./routes/api/search');
 const categoryRouter = require('./routes/api/categories');
+const chatRouter = require('./routes/api/chat');
+const appointmentsRouter = require('./routes/api/appointment');
+const favoritesRouter = require('./routes/api/favorites');
 const autMiddleware = require('./middlewares/authMiddleware');
+const appointmentMiddleware = require('./middlewares/appointmentMiddelware');
+const adminRouter = require('./routes/admin/index');
+
 
 mongoose
   .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
@@ -24,7 +31,8 @@ mongoose
     console.error('Error connecting to mongo', err)
   });
 
-const app = express();
+const app = module.exports = express();
+
 app.use(
   cors({
     credentials: true,
@@ -46,26 +54,30 @@ app.use(
   session({
     store: new MongoStore({
       mongooseConnection: mongoose.connection,
-      ttl: 24 * 60 * 60, // 1 day
+      ttl: 24 * 60 * 60,
     }),
     secret: "serkens",
-    resave: true,
-    saveUninitialized: false,
+    resave: false,
+    saveUninitialized: true,
     name: 'serkens',
     cookie: {
       maxAge: 24 * 60 * 60 * 1000
     },
   })
 );
+app.use(appointmentMiddleware.changeAppointmentStatusIfFinished);
 app.use('/', authRouter);
 app.use('/profile', profileRouter);
 app.use('/categories', categoryRouter);
+app.use('/search', searchRouter);
+app.use('/favorites', favoritesRouter);
 
-//app.use(autMiddleware.checkIfLoggedIn);
-//Next routes will be privates
+app.use('/appointments', appointmentsRouter);
 app.use('/ad', adRouter);
+app.use('/chats', chatRouter);
 
-app.use('/profile', profileRouter);
+app.use('/admin', adminRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -73,14 +85,14 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use((err, req, res, next) => {
+  // always log the error
+  console.error('ERROR', req.method, req.path, err);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  // only render if the error ocurred before sending the response
+  if (!res.headersSent) {
+    res.status(500).json({ code: 'unexpected', error: err });
+  }
 });
 
 module.exports = app;

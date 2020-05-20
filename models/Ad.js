@@ -26,7 +26,7 @@ const adSchema = new  Schema (
     number: String,
     address: String,
     postalCode: String,
-    tags: Array,
+    tags: [String],
     category: {type: Schema.Types.ObjectId, ref: 'Category'},
     images : Array,
     deleted_at: {
@@ -39,7 +39,7 @@ const adSchema = new  Schema (
 	} 
 );
 
-
+adSchema.index({location: '2dsphere'});
 const Ad = mongoose.model("Ad", adSchema);
 
 module.exports = Ad;

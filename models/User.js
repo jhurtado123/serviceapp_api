@@ -2,46 +2,68 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const userSchema = new  Schema (
+const userSchema = new Schema(
   {
-    username: { type: String, required: true, unique: true},
-    password: {type: String, required: true },
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
     name: { type: String },
     role: [],
     location: {
       type: {
         type: String,
-        enum: ['Point'],
-        default: 'Point',
-        required: true
+        enum: ["Point"],
+        default: "Point",
+        required: true,
       },
-      coordinates: [{
-        type: [Number],
-        required: true
-      }]
+      coordinates: [
+        {
+          type: [Number],
+          required: true,
+        },
+      ],
     },
     profile_image: String,
     description: String,
-    points: { type: Number, default: 0},
+    points: { type: Number, default: 0 },
     address: String,
+    number: Number,
     postalcode: String,
     city: String,
     wallet: {
-      tokens: Number,
+      tokens: { type: Number, default: 0 },
     },
-    review:  [{
-      user: { type: Schema.Types.ObjectId, ref: 'User' },
-      ad: { type: Schema.Types.ObjectId, ref: 'Ad' },
-      content:  String,
-      rating: Number,
-    }],
+    review: [
+      {
+        user: { type: Schema.Types.ObjectId, ref: "User" },
+        ad: { type: Schema.Types.ObjectId, ref: "Ad" },
+        content: String,
+        rating: Number,
+      },
+    ],
+    recently_viewed: [],
+    notifications: [
+      {
+        type: new mongoose.Schema(
+          {
+            title: String,
+            href: String,
+            isReaded: {
+              type: Boolean,
+              default: false,
+            },
+          },
+          { timestamps: true }
+        ),
+      },
+    ],
+    favorites: [{ type: Schema.Types.ObjectId, ref: 'Ad' }],
   },
   {
-		timestamps: {
-			createdAt: 'created_at',
-			updatedAt: 'updated_at',
-		},
-	} 
+    timestamps: {
+      createdAt: "created_at",
+      updatedAt: "updated_at",
+    },
+  }
 );
 
 
