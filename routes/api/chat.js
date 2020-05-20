@@ -15,7 +15,7 @@ router.get('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
     const response = [];
     const chats = await Chat.find({$or: [{buyer: currentUser}, {seller: currentUser}]}).sort({createdAt: -1}).populate('ad seller buyer');
     for (const chat of chats) {
-      let messagesFrom = chat.seller === currentUser ? chat.buyer._id : chat.seller._id;
+      let messagesFrom = `${chat.seller._id}` === `${currentUser._id}` ? chat.buyer._id : chat.seller._id;
       const chatMessages = await Message.count({chat: chat._id, isReaded: false, sender: messagesFrom});
       response.push({chat, unReadMessages: chatMessages});
     }
@@ -60,7 +60,6 @@ router.post('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   try {
     const ad = await Ad.findOne({_id: adId});
     const chat = await Chat.create({buyer: currentUser, seller: ad.owner, price: ad.price, ad});
-    console.log("USER", ad.owner)
     createNofifications(ad.owner,{'title': 'Tienes un nuevo chat', 'href': `/chats/${adId}`});
     return res.status(200).json({data: chat._id});
 
