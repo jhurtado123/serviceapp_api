@@ -4,7 +4,7 @@ const socket = require('../lib/socketIo');
 module.exports = async function createNofifications (id, options) {
   try{
     const user = await User.findOne({ '_id': id })
-        user.notifications.push({ 'title': options.title, 'href': options.href });
+        user.notifications.push({ 'title': options.title, 'href': options.href , 'type': options.type });
         user.save();
         console.log("ENTRAAAAA", socket.io.sockets.connected);
         console.log("LA ID", id)
