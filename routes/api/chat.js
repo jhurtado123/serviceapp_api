@@ -60,7 +60,6 @@ router.post('/', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   try {
     const ad = await Ad.findOne({_id: adId});
     const chat = await Chat.create({buyer: currentUser, seller: ad.owner, price: ad.price, ad});
-    console.log("USER", ad.owner)
     createNofifications(ad.owner,{'title': 'Tienes un nuevo chat', 'href': `/chats/${adId}`, 'type': 'chat'});
     return res.status(200).json({data: chat._id});
 
