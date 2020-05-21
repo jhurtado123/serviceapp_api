@@ -4,7 +4,6 @@ const Ad = require('../../models/Ad');
 
 router.get('/', (req, res, next) => {
   const {search, maxRadius, maxPrice, category, orderBy} = req.query;
-  console.log(orderBy);
   const tagsSearch = search.split(' ');
   const userCoordinates = req.session.currentUser.location.coordinates;
 
