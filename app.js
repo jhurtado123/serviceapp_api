@@ -19,6 +19,8 @@ const appointmentsRouter = require('./routes/api/appointment');
 const favoritesRouter = require('./routes/api/favorites');
 const autMiddleware = require('./middlewares/authMiddleware');
 const appointmentMiddleware = require('./middlewares/appointmentMiddelware');
+const adminRouter = require('./routes/admin/index');
+
 
 mongoose
   .connect(process.env.MONGODB_URI, {useNewUrlParser: true})
@@ -73,6 +75,8 @@ app.use('/favorites', favoritesRouter);
 app.use('/appointments', appointmentsRouter);
 app.use('/ad', adRouter);
 app.use('/chats', chatRouter);
+
+app.use('/admin', adminRouter);
 
 
 // catch 404 and forward to error handler
