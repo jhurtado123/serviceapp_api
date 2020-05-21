@@ -11,41 +11,27 @@
     <link rel='stylesheet' href='/admin/css/animate.css'/>
     <link rel='stylesheet' href='/admin/css/style.css'/>
     <link rel='stylesheet' href='/admin/css/colors/default.css'/>
+    {{{ block 'stylesheets' }}}
+
 
 </head>
 <body class="fix-header">
-<!-- ============================================================== -->
-<!-- Preloader -->
-<!-- ============================================================== -->
 <div class="preloader">
     <svg class="circular" viewBox="25 25 50 50">
         <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
     </svg>
 </div>
-<!-- ============================================================== -->
-<!-- Wrapper -->
-<!-- ============================================================== -->
 <div id="wrapper">
-    <!-- ============================================================== -->
-    <!-- Topbar header - style you can find in pages.scss -->
-    <!-- ============================================================== -->
     <nav class="navbar navbar-default navbar-static-top m-b-0">
         <div class="navbar-header">
             <div class="top-left-part">
-                <!-- Logo -->
                 <a class="logo" href="dashboard.html">
-                    <!-- Logo icon image, you can use font-icon also -->
                     <b>
-                        <!--This is dark logo icon-->
                         <img src="/admin/images/admin-logo.png" alt="home" class="dark-logo"/>
-                        <!--This is light logo icon-->
                         <img src="/admin/images/admin-logo-dark.png" alt="home" class="light-logo"/>
                     </b>
-                    <!-- Logo text image you can use text also -->
                     <span class="hidden-xs">
-                            <!--This is dark logo text-->
                             <img src="/admin/images/admin-text.png" alt="home" class="dark-logo"/>
-                        <!--This is light logo text-->
                             <img src="/admin/images/admin-text-dark.png" alt="home" class="light-logo"/>
                         </span>
                 </a>
@@ -70,14 +56,7 @@
                 </li>
             </ul>
         </div>
-        <!-- /.navbar-header -->
-        <!-- /.navbar-top-links -->
-        <!-- /.navbar-static-side -->
     </nav>
-    <!-- End Top Navigation -->
-    <!-- ============================================================== -->
-    <!-- Left Sidebar - style you can find in sidebar.scss  -->
-    <!-- ============================================================== -->
     <div class="navbar-default sidebar" role="navigation">
         <div class="sidebar-nav slimscrollsidebar">
             <div class="sidebar-head">
@@ -98,7 +77,7 @@
                     <a href="/admin/categories" class="waves-effect"><i class="fa fa-list fa-fw" aria-hidden="true"></i>Categorías</a>
                 </li>
                 <li>
-                    <a href="/admin/niveles" class="waves-effect"><i class="fa fa-star fa-fw" aria-hidden="true"></i>Niveles</a>
+                    <a href="/admin/levels" class="waves-effect"><i class="fa fa-star fa-fw" aria-hidden="true"></i>Niveles</a>
                 </li>
                 <li>
                     <a href="blank.html" class="waves-effect"><i class="fa fa-columns fa-fw" aria-hidden="true"></i>Mediaciones</a>
@@ -111,18 +90,9 @@
         </div>
 
     </div>
-    <!-- ============================================================== -->
-    <!-- End Left Sidebar -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- Page Content -->
-    <!-- ============================================================== -->
     <div id="page-wrapper">
         {{{body}}}
     </div>
-    <!-- ============================================================== -->
-    <!-- End Page Content -->
-    <!-- ============================================================== -->
 </div>
 </body>
 
@@ -140,6 +110,5 @@
 <script src="/admin/javascript/custom.min.js"></script>
 <script src="/admin/javascript/dashboard1.js"></script>
 <script src="/admin/plugins/toast-master/js/jquery.toast.js"></script>
-
-
+{{{ block 'javascripts' }}}
 </html>
