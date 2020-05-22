@@ -90,11 +90,17 @@ app.use('/appointments', appointmentsRouter);
 app.use('/ad', adRouter);
 app.use('/chats', chatRouter);
 
-app.use('/admin', adminRouter);
-app.use('/admin/users', userAdminRouter);
-app.use('/admin/ads', adAdminRouter);
-app.use('/admin/categories', categoriesAdminRouter);
-app.use('/admin/levels', levelsAdminRouter);
+
+app.dynamicHelpers({
+  currentUser: function (req, res) {
+    return req.session.currentUser;
+  },
+});
+app.use('/admin', autMiddleware.checkIsGrantedRoleAdmin, adminRouter);
+app.use('/admin/users', autMiddleware.checkIsGrantedRoleAdmin, userAdminRouter);
+app.use('/admin/ads', autMiddleware.checkIsGrantedRoleAdmin, adAdminRouter);
+app.use('/admin/categories', autMiddleware.checkIsGrantedRoleAdmin, categoriesAdminRouter);
+app.use('/admin/levels', autMiddleware.checkIsGrantedRoleAdmin, levelsAdminRouter);
 
 
 // catch 404 and forward to error handler
