@@ -14,3 +14,8 @@
 #table tbody td {
     padding:20px 10px!important;
 }
+
+.profile-pic img {
+    padding: 5px;
+    background: white;
+}
