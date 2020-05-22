@@ -45,7 +45,6 @@
                                     <td>{{this.wallet.tokens}}</td>
                                     <td class="actions">
                                         <img src="/admin/images/edit.png" class="action-edit" data-id="{{this.id}}"/>
-                                        <img src="/admin/images/trash.png" class="action-remove" data-id="{{this.id}}"/>
                                     </td>
                                 </tr>
                             {{/each}}
@@ -54,6 +53,58 @@
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal" id="editUserModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm">
+                <div class="modal-header">
+                    <h4 class="modal-title">Editar usuario</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input name="name" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <textarea name="description" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección</label>
+                        <input name="address" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Número</label>
+                        <input name="number" type="number">
+                    </div>
+                    <div class="form-group">
+                        <label>Ciudad</label>
+                        <input name="city" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Código postal</label>
+                        <input name="postalcode" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Serkens</label>
+                        <input name="tokens" type="number">
+                    </div>
+                    <div class="form-group">
+                        <label>Puntos de nivel</label>
+                        <input name="points" type="number">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="update">Actualizar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
