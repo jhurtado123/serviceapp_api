@@ -6,6 +6,7 @@ const Ad = require('../../models/Ad');
 const User = require('../../models/User');
 const autMiddleware = require('../../middlewares/authMiddleware');
 const adMiddleware = require('../../middlewares/adMiddleware');
+const checkAdsReward = require('../../middlewares/rewardsMiddleware');
 
 const fs = require('fs');
 
@@ -94,6 +95,7 @@ router.post('/', autMiddleware.checkIfLoggedIn, upload.any(), async (req, res, n
             if (err) next();
           })
       });
+      checkAdsReward(owner._id)
         return res.status(200).json({data: true});
   }
   catch (error) {
