@@ -16,6 +16,7 @@ const number = document.querySelector('input[name=number]');
 const city = document.querySelector('input[name=city]');
 const postalcode = document.querySelector('input[name=postalcode]');
 const serkens = document.querySelector('input[name=tokens]');
+const role = document.querySelector('select[name=role]');
 const points = document.querySelector('input[name=points]');
 
 actionEdit.forEach(edit => {
@@ -26,6 +27,7 @@ actionEdit.forEach(edit => {
     editForm.method = 'POST';
     name.value = user.name ? user.name : '';
     description.value = user.description ? user.description : '' ;
+    role.value = user.role.length ? user.role[0] : 'ROLE_USER' ;
     address.value = user.address ? user.address : '' ;
     number.value = user.number ? user.number : '';
     city.value = user.city ? user.city : '';
