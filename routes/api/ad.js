@@ -6,7 +6,7 @@ const Ad = require('../../models/Ad');
 const User = require('../../models/User');
 const autMiddleware = require('../../middlewares/authMiddleware');
 const adMiddleware = require('../../middlewares/adMiddleware');
-const checkAdsReward = require('../../middlewares/rewardsMiddleware');
+const {checkAdsReward} = require('../../middlewares/rewardsMiddleware');
 
 const fs = require('fs');
 

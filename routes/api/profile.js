@@ -8,7 +8,7 @@ const Ad = require('../../models/Ad');
 const Level = require('../../models/Level');
 const Reward = require('../../models/Reward');
 const {checkIfLoggedIn} = require('../../middlewares/authMiddleware');
-const checkProfileCompletedReward = require('../../middlewares/rewardsMiddleware');
+const {checkProfileCompletedReward} = require('../../middlewares/rewardsMiddleware');
 
 
 const storage = multer.diskStorage({
@@ -46,7 +46,7 @@ router.put("/edit", upload.any(), checkIfLoggedIn, async (req, res, next) => {
     images.push(file.filename);
     profile_image = file.filename
   });
-  checkProfileCompletedReward(currentUser._id, {name, description,profile_image, address})
+  checkProfileCompletedReward(currentUser._id, {name, description, address})
   try {
     const newUser = await User.findOneAndUpdate(
       {'_id': currentUser._id},
