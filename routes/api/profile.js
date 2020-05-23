@@ -6,7 +6,10 @@ const fs = require("fs");
 const User = require('../../models/User');
 const Ad = require('../../models/Ad');
 const Level = require('../../models/Level');
+const Reward = require('../../models/Reward');
 const {checkIfLoggedIn} = require('../../middlewares/authMiddleware');
+const {checkProfileCompletedReward} = require('../../middlewares/rewardsMiddleware');
+
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -43,8 +46,7 @@ router.put("/edit", upload.any(), checkIfLoggedIn, async (req, res, next) => {
     images.push(file.filename);
     profile_image = file.filename
   });
-
-
+  checkProfileCompletedReward(currentUser._id, {name, description, address})
   try {
     const newUser = await User.findOneAndUpdate(
       {'_id': currentUser._id},
@@ -151,6 +153,18 @@ router.put('/notifications/', checkIfLoggedIn, async (req, res, next) => {
     return next(e)
   }
 });
+
+router.get('/rewards/ads', checkIfLoggedIn, async (req, res, next) => {
+  const { currentUser } = req.session;
+  try {
+    const ads = await Ad.find({ owner: currentUser._id, deleted_at: null })
+    let numAds = ads.length; 
+    const reward = await Reward.find({"type": "ad", "total": { $gte: numAds}})
+    return res.status(200).json(reward[0])
+  } catch (error) {
+    next(error);
+  }
+})
 
 
 module.exports = router;
