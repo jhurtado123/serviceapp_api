@@ -14,7 +14,7 @@ const rewardsMiddleware = {
       if (user.rewards.includes(reward._id) === false ){
         user.rewards.push(reward)
             await User.findOneAndUpdate({'_id': id}, {'rewards': user.rewards, 'points': newPoints})
-            createNofifications(id, {'title': 'Has obtenido una recompensa', 'href': '/profile/rewards', 'type': 'reward'})
+        createNofifications(id, { 'title': 'Recompensa por completar tu perfil', 'href': '/profile/rewards', 'type': 'reward'})
         }
       }
       catch(err) {
@@ -32,7 +32,7 @@ const rewardsMiddleware = {
         user.rewards.push(reward[0])
         let newPoints = user.points + reward[0].points
         await User.findOneAndUpdate({ '_id': user._id }, { 'rewards': user.rewards, 'points': newPoints })
-        createNofifications(id, { 'title': 'Has obtenido una recompensa', 'href': '/profile/rewards', 'type': 'reward' })
+        createNofifications(id, { 'title': `Recompensa por ${numAds} anuncios`, 'href': '/profile/rewards', 'type': 'reward' })
       }
     }
     catch (error) {
