@@ -5,7 +5,9 @@ const multer = require("multer");
 const fs = require("fs");
 const User = require('../../models/User');
 const Ad = require('../../models/Ad');
+const Appointment = require('../../models/Appointment');
 const Level = require('../../models/Level');
+const Mediation = require('../../models/Mediation');
 const {checkIfLoggedIn} = require('../../middlewares/authMiddleware');
 
 const storage = multer.diskStorage({
@@ -85,12 +87,12 @@ router.get('/ads', checkIfLoggedIn, async (req, res, next) => {
 router.get('/user/:username', async (req, res, nex) => {
   const {username} = req.params;
   try {
-    const user = await User.find({username})
+    const user = await User.find({username});
     return res.status(200).json({user})
   } catch (error) {
     next(error);
   }
-})
+});
 
 router.get('/ads/removed', checkIfLoggedIn, async (req, res, next) => {
   const user = req.session.currentUser;
@@ -123,31 +125,66 @@ router.put('/ad/:id', checkIfLoggedIn, async (req, res, next) => {
   }
 });
 
-router.put('/buyTokens', async (req, res, next) => {
+router.put('/buyTokens', checkIfLoggedIn, async (req, res, next) => {
   const {quantity} = req.body;
   const {currentUser} = req.session;
   try {
-    await User.findOneAndUpdate({ _id: currentUser._id }, { $inc: { 'wallet.tokens': quantity } });
+    await User.findOneAndUpdate({_id: currentUser._id}, {$inc: {'wallet.tokens': quantity}});
     return res.status(200).json({response: true});
   } catch (e) {
     return next(e)
   }
-  
+
+});
+
+router.put('/setReview', checkIfLoggedIn, async (req, res, next) => {
+  const {appointment, valoration, stars, mediationText, showMediationForm} = req.body;
+  const {currentUser} = req.session;
+  try {
+    const workingId = appointment.buyer._id === currentUser._id ? appointment.seller._id : appointment.buyer._id;
+    if (appointment.buyer._id === currentUser._id) {
+      await Appointment.findOneAndUpdate({_id: appointment._id}, {hasBuyerReviewed: true});
+      if (showMediationForm) {
+        await new Mediation({appointment: appointment._id, buyerMessage: mediationText}).save();
+      } else {
+        const seller = await User.findOne({_id: appointment.seller._id});
+        seller.wallet.tokens += appointment.pendingTokens;
+        await seller.save();
+        await Appointment.findOneAndUpdate({_id: appointment._id}, {pendingTokens: 0});
+      }
+    } else {
+      await Appointment.findOneAndUpdate({_id: appointment._id}, {hasSellerReviewed: true});
+    }
+    const userToReview = await User.findOne({_id: workingId});
+    userToReview.review.push({
+      user: currentUser._id,
+      ad: appointment.ad._id,
+      content: valoration,
+      rating: stars,
+    });
+    await userToReview.save();
+
+
+    res.status(200).json();
+  } catch (e) {
+    return next(e)
+  }
+
 });
 
 
 router.put('/notifications/', checkIfLoggedIn, async (req, res, next) => {
-  const { currentUser } = req.session;
+  const {currentUser} = req.session;
   try {
-    const { notifications } = await User.findById({_id: currentUser._id})
+    const {notifications} = await User.findById({_id: currentUser._id});
     for (let i = 0; i < notifications.length; i++) {
       const notification = notifications[i];
-      notification.isReaded = true; 
-      
+      notification.isReaded = true;
+
     }
-    await User.findOneAndUpdate({_id: currentUser._id}, {notifications})
-    return res.status(200).json({ response: true });
-  } catch(e){
+    await User.findOneAndUpdate({_id: currentUser._id}, {notifications});
+    return res.status(200).json({response: true});
+  } catch (e) {
     return next(e)
   }
 });

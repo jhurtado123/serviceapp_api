@@ -18,6 +18,14 @@ const appointmentSchema = new  Schema (
         required: true
       }]
     },
+    hasBuyerReviewed: {
+      type: Boolean,
+      default: false,
+    },
+    hasSellerReviewed: {
+      type: Boolean,
+      default: false,
+    },
     seller: {type: Schema.Types.ObjectId, ref: 'User'},
     buyer: {type: Schema.Types.ObjectId, ref: 'User'},
     ad: {type: Schema.Types.ObjectId, ref: 'Ad'},

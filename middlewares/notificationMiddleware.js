@@ -3,9 +3,9 @@ const socket = require('../lib/socketIo');
 
 
 module.exports = async function createNofifications(id, options) {
-  let notificationNotReaded = []
+  let notificationNotReaded = [];
   try {
-    const user = await User.findOne({'_id': id})
+    const user = await User.findOne({'_id': id});
     user.notifications.push({ 'title': options.title, 'href': options.href, 'type': options.type });
     user.save();
     for (let i = 0; i < user.notifications.length; i++) {
@@ -18,7 +18,6 @@ module.exports = async function createNofifications(id, options) {
       const socketCustomID = socket.io.sockets.connected[socketId].id;
       if (socketCustomID == id) {
         socket.io.to(socketId).emit('notification:count', {
-          //Todo
           value: notificationNotReaded.length,
           notification: 1
         });
