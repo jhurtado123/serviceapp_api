@@ -5,6 +5,19 @@ const Appointment = require('../../models/Appointment');
 const User = require('../../models/User');
 
 
+router.get('/:id/forReview', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
+  const {currentUser} = req.session;
+  const {id} = req.params;
+  console.log(id);
+  try {
+    const appointment =  await Appointment.findOne({_id: id, status: 'finished', $or: [{seller: currentUser, hasSellerReviewed: false}, {buyer: currentUser , hasBuyerReviewed: false}]}).populate('ad seller buyer chat');
+    if (!appointment) return next();
+    return res.status(200).json({appointment});
+  } catch (e) {
+    return next(e);
+  }
+});
+
 router.get('/:id', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   const {currentUser} = req.session;
   const {id} = req.params;

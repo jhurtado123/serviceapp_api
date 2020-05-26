@@ -79,16 +79,15 @@ app.use(
   })
 );
 
-app.use(appointmentMiddleware.changeAppointmentStatusIfFinished);
 app.use('/', authRouter);
-app.use('/profile', profileRouter);
-app.use('/categories', categoryRouter);
-app.use('/search', searchRouter);
-app.use('/favorites', favoritesRouter);
+app.use('/profile', appointmentMiddleware.changeAppointmentStatusIfFinished, profileRouter);
+app.use('/categories', appointmentMiddleware.changeAppointmentStatusIfFinished, categoryRouter);
+app.use('/search',appointmentMiddleware.changeAppointmentStatusIfFinished , searchRouter);
+app.use('/favorites', appointmentMiddleware.changeAppointmentStatusIfFinished, favoritesRouter);
 
-app.use('/appointments', appointmentsRouter);
-app.use('/ad', adRouter);
-app.use('/chats', chatRouter);
+app.use('/appointments', appointmentMiddleware.changeAppointmentStatusIfFinished, appointmentsRouter);
+app.use('/ad', appointmentMiddleware.changeAppointmentStatusIfFinished, adRouter);
+app.use('/chats', appointmentMiddleware.changeAppointmentStatusIfFinished, chatRouter);
 
 
 app.dynamicHelpers({
