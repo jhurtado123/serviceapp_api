@@ -111,15 +111,18 @@ router.put('/ad/:id', checkIfLoggedIn, async (req, res, next) => {
   try {
     const ad = await Ad.findOne({_id: id}).populate('category');
     const {recently_viewed} = await User.findOne({'_id': user._id});
-    if (recently_viewed.length > 6) {
-      recently_viewed.pop()
+    const idvieweds = recently_viewed.map((adViewed) => adViewed._id.toString())
+    if (!idvieweds.includes(ad._id.toString())){
+      if (recently_viewed.length > 6) {
+        recently_viewed.pop()
+      }
+      recently_viewed.unshift(ad);
+      const userUpdated = await User.findOneAndUpdate(
+        {'_id': user._id},
+        {recently_viewed: recently_viewed}
+      );
+      return res.status(200).json({userUpdated});
     }
-    recently_viewed.unshift(ad);
-    const userUpdated = await User.findOneAndUpdate(
-      {'_id': user._id},
-      {recently_viewed: recently_viewed}
-    );
-    return res.status(200).json({userUpdated});
   } catch (error) {
     next(error);
   }
