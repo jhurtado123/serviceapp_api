@@ -1,0 +1,79 @@
+{{#extend "stylesheets"}}
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+{{/extend}}
+
+<div class="container-fluid">
+    <div class="row bg-title">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+            <h4 class="page-title">Dashboard</h4></div>
+        <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+            <ol class="breadcrumb">
+                <li><a href="#">Ajustes de Serkens</a></li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Ajustes</h3>
+                <div class="table-responsive">
+                    <table class="table" id="table">
+                        <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Value</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{# if serkensSettings.length }}
+                            {{#each serkensSettings}}
+                                <tr>
+                                    <td>{{this.key}}</td>
+                                    <td>{{this.value}}</td>
+                                    <td class="actions">
+                                        <img src="/admin/images/edit.png" class="action-edit" data-id="{{this.id}}"/>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        {{/if}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="editSettingModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm">
+                <div class="modal-header">
+                    <h4 class="modal-title">Editar variable</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Key</label>
+                        <input name="key" type="text" disabled/>
+                    </div>
+                    <div class="form-group">
+                        <label>Value</label>
+                        <input name="value" type="text"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="update">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{#extend "javascripts"}}
+    <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="/admin/javascript/settings/settings.js"></script>
+{{/extend}}
+
