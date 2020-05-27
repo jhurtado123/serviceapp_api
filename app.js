@@ -26,6 +26,8 @@ const userAdminRouter = require('./routes/admin/users');
 const adAdminRouter = require('./routes/admin/ads');
 const categoriesAdminRouter = require('./routes/admin/categories');
 const levelsAdminRouter = require('./routes/admin/levels');
+const settingsAdminRouter = require('./routes/admin/settings');
+
 
 hbs = extend(hbs);
 
@@ -100,6 +102,8 @@ app.use('/admin/users', autMiddleware.checkIsGrantedRoleAdmin, userAdminRouter);
 app.use('/admin/ads', autMiddleware.checkIsGrantedRoleAdmin, adAdminRouter);
 app.use('/admin/categories', autMiddleware.checkIsGrantedRoleAdmin, categoriesAdminRouter);
 app.use('/admin/levels', autMiddleware.checkIsGrantedRoleAdmin, levelsAdminRouter);
+app.use('/admin/settings', autMiddleware.checkIsGrantedRoleAdmin, settingsAdminRouter);
+
 
 
 // catch 404 and forward to error handler
