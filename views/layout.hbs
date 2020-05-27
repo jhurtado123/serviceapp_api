@@ -46,6 +46,9 @@
                     <a class="profile-pic" href="#"> <img src="/uploads/profile/{{currentUser._id}}/{{currentUser.profile_image}}" alt="user-img"
                                                           width="36" class="img-circle"><b class="hidden-xs">{{currentUser.name}}</b></a>
                 </li>
+                <li>
+                    <a href="/logout" onclick="setTimeout(() => location.reload(),1000)">Logout</a>
+                </li>
             </ul>
         </div>
     </nav>
