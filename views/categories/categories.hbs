@@ -15,6 +15,7 @@
     <div class="row">
         <div class="col-md-12 col-lg-12 col-sm-12">
             <div class="white-box">
+                <div class="create-category add-new" data-toggle="modal" data-target="#createCategoryModal">Crear nueva</div>
                 <h3 class="box-title">Categorías</h3>
                 <div class="table-responsive">
                     <table class="table" id="table">
@@ -30,10 +31,20 @@
                             {{#each categories}}
                                 <tr>
                                     <td>{{this.name}}</td>
-                                    <td>{{this.deleted_at}}</td>
+                                    <td>{{#if this.deleted_at}}Si{{else}}No{{/if}}</td>
                                     <td class="actions">
                                         <img src="/admin/images/edit.png" class="action-edit" data-id="{{this.id}}"/>
-                                        <img src="/admin/images/trash.png" class="action-remove" data-id="{{this.id}}"/>
+                                        {{#if this.deleted_at}}
+                                            <form action="/admin/categories/{{this._id}}/recover" method="post">
+                                                <img src="/admin/images/recover.png" class="action-recover"
+                                                     data-id="{{this.id}}" onclick="this.parentNode.submit()"/>
+                                            </form>
+                                        {{else}}
+                                            <form action="/admin/categories/{{this._id}}/remove" method="post">
+                                                <img src="/admin/images/trash.png" class="action-remove"
+                                                     data-id="{{this.id}}" onclick="this.parentNode.submit()"/>
+                                            </form>
+                                        {{/if}}
                                     </td>
                                 </tr>
                             {{/each}}
@@ -42,6 +53,60 @@
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="createCategoryModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="createForm" method="post" action="/admin/categories/create">
+                <div class="modal-header">
+                    <h4 class="modal-title">Crear categoría</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input name="name" type="text"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="update">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="editCategoryModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm">
+                <div class="modal-header">
+                    <h4 class="modal-title">Editar categoría</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input name="name" type="text"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Borrado</label>
+                        <select name="deleted_at">
+                            <option value="1">Si</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="update">Actualizar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
