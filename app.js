@@ -18,6 +18,7 @@ const searchRouter = require('./routes/api/search');
 const categoryRouter = require('./routes/api/categories');
 const chatRouter = require('./routes/api/chat');
 const appointmentsRouter = require('./routes/api/appointment');
+const settingsRouter = require('./routes/api/setting');
 const favoritesRouter = require('./routes/api/favorites');
 const autMiddleware = require('./middlewares/authMiddleware');
 const appointmentMiddleware = require('./middlewares/appointmentMiddelware');
@@ -90,6 +91,7 @@ app.use('/favorites', appointmentMiddleware.changeAppointmentStatusIfFinished, f
 app.use('/appointments', appointmentMiddleware.changeAppointmentStatusIfFinished, appointmentsRouter);
 app.use('/ad', appointmentMiddleware.changeAppointmentStatusIfFinished, adRouter);
 app.use('/chats', appointmentMiddleware.changeAppointmentStatusIfFinished, chatRouter);
+app.use('/settings', appointmentMiddleware.changeAppointmentStatusIfFinished, settingsRouter);
 
 
 app.dynamicHelpers({
