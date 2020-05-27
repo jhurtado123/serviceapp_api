@@ -58,6 +58,7 @@ const userSchema = new Schema(
       },
     ],
     favorites: [{ type: Schema.Types.ObjectId, ref: 'Ad' }],
+    rewards: [{type: Schema.Types.ObjectId, ref: 'Reward'}], 
   },
   {
     timestamps: {

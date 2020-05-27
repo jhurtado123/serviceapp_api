@@ -36,17 +36,22 @@ const levels = [
   {
     "level" : 5,
     "minpoints": 501,
-    "maxpoints": 850,
+    "maxpoints": 1500,
   },
   {
     "level" : 6,
-    "minpoints": 851,
-    "maxpoints": 1250,
+    "minpoints": 1501,
+    "maxpoints": 5000,
   },
   {
     "level" : 7,
-    "minpoints": 1251,
-    "maxpoints": 1700,
+    "minpoints": 5001,
+    "maxpoints": 25000,
+  },
+  {
+    "level" : 8,
+    "minpoints": 25001,
+    "maxpoints": 100000,
   },
 ]
 

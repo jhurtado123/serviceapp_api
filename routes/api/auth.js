@@ -2,16 +2,21 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const axios = require("axios");
+const appointmentMiddleware = require('../../middlewares/appointmentMiddelware');
+
 
 const { checkUsernameAndPasswordNotEmpty } = require('../../middlewares/authMiddleware');
 const mapboxApiClient = require("../../services/mapbox");
 const User = require("../../models/User");
 
-router.get('/whoami', async (req, res, next) => {
+router.get('/whoami', appointmentMiddleware.changeAppointmentStatusIfFinished, async (req, res, next) => {
   if (req.session.currentUser) {
     const user = await User.findOne({_id: req.session.currentUser._id}).populate({
       path: 'recently_viewed.category',
-      model: 'Category'
+      model: 'Category',
+    }).populate({
+      path: 'recently_viewed.owner',
+      model: 'User'
     });
     req.session.currentUser = user;
     res.status(200).json(req.session.currentUser)

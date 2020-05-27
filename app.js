@@ -8,6 +8,8 @@ const MongoStore = require("connect-mongo")(session);
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
+let hbs = require('hbs');
+const extend = require('handlebars-extend-block');
 const indexRouter = require('./routes/api/index');
 const profileRouter = require('./routes/api/profile');
 const authRouter = require("./routes/api/auth");
@@ -20,6 +22,12 @@ const favoritesRouter = require('./routes/api/favorites');
 const autMiddleware = require('./middlewares/authMiddleware');
 const appointmentMiddleware = require('./middlewares/appointmentMiddelware');
 const adminRouter = require('./routes/admin/index');
+const userAdminRouter = require('./routes/admin/users');
+const adAdminRouter = require('./routes/admin/ads');
+const categoriesAdminRouter = require('./routes/admin/categories');
+const levelsAdminRouter = require('./routes/admin/levels');
+
+hbs = extend(hbs);
 
 
 mongoose
@@ -45,6 +53,11 @@ app.use(
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+require('express-dynamic-helpers-patch')(app);
+
+hbs.registerPartials(path.join(__dirname, '/views/partials'));
+
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -65,18 +78,28 @@ app.use(
     },
   })
 );
-app.use(appointmentMiddleware.changeAppointmentStatusIfFinished);
+
 app.use('/', authRouter);
-app.use('/profile', profileRouter);
-app.use('/categories', categoryRouter);
-app.use('/search', searchRouter);
-app.use('/favorites', favoritesRouter);
+app.use('/profile', appointmentMiddleware.changeAppointmentStatusIfFinished, profileRouter);
+app.use('/categories', appointmentMiddleware.changeAppointmentStatusIfFinished, categoryRouter);
+app.use('/search',appointmentMiddleware.changeAppointmentStatusIfFinished , searchRouter);
+app.use('/favorites', appointmentMiddleware.changeAppointmentStatusIfFinished, favoritesRouter);
 
-app.use('/appointments', appointmentsRouter);
-app.use('/ad', adRouter);
-app.use('/chats', chatRouter);
+app.use('/appointments', appointmentMiddleware.changeAppointmentStatusIfFinished, appointmentsRouter);
+app.use('/ad', appointmentMiddleware.changeAppointmentStatusIfFinished, adRouter);
+app.use('/chats', appointmentMiddleware.changeAppointmentStatusIfFinished, chatRouter);
 
-app.use('/admin', adminRouter);
+
+app.dynamicHelpers({
+  currentUser: function (req, res) {
+    return req.session.currentUser;
+  },
+});
+app.use('/admin', autMiddleware.checkIsGrantedRoleAdmin, adminRouter);
+app.use('/admin/users', autMiddleware.checkIsGrantedRoleAdmin, userAdminRouter);
+app.use('/admin/ads', autMiddleware.checkIsGrantedRoleAdmin, adAdminRouter);
+app.use('/admin/categories', autMiddleware.checkIsGrantedRoleAdmin, categoriesAdminRouter);
+app.use('/admin/levels', autMiddleware.checkIsGrantedRoleAdmin, levelsAdminRouter);
 
 
 // catch 404 and forward to error handler

@@ -6,6 +6,14 @@ const checkIfLoggedIn = (req, res, next) => {
   }
 };
 
+const checkIsGrantedRoleAdmin = (req, res, next) => {
+  if (req.session.currentUser && req.session.currentUser.role.includes('ROLE_ADMIN') ) {
+    next();
+  } else {
+    res.status(401).json({ code: "unauthorized" });
+  }
+};
+
 const checkUsernameAndPasswordNotEmpty = (req, res, next) => {
   const { username, password } = req.body;
 
@@ -19,5 +27,6 @@ const checkUsernameAndPasswordNotEmpty = (req, res, next) => {
 
 module.exports = {
   checkIfLoggedIn,
+  checkIsGrantedRoleAdmin,
   checkUsernameAndPasswordNotEmpty,
 };

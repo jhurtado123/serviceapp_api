@@ -5,8 +5,13 @@ const multer = require("multer");
 const fs = require("fs");
 const User = require('../../models/User');
 const Ad = require('../../models/Ad');
+const Appointment = require('../../models/Appointment');
 const Level = require('../../models/Level');
+const Mediation = require('../../models/Mediation');
+const Reward = require('../../models/Reward');
 const {checkIfLoggedIn} = require('../../middlewares/authMiddleware');
+const {checkProfileCompletedReward} = require('../../middlewares/rewardsMiddleware');
+
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -43,8 +48,7 @@ router.put("/edit", upload.any(), checkIfLoggedIn, async (req, res, next) => {
     images.push(file.filename);
     profile_image = file.filename
   });
-
-
+  checkProfileCompletedReward(currentUser._id, {name, description, address})
   try {
     const newUser = await User.findOneAndUpdate(
       {'_id': currentUser._id},
@@ -85,12 +89,12 @@ router.get('/ads', checkIfLoggedIn, async (req, res, next) => {
 router.get('/user/:username', async (req, res, nex) => {
   const {username} = req.params;
   try {
-    const user = await User.find({username})
+    const user = await User.find({username});
     return res.status(200).json({user})
   } catch (error) {
     next(error);
   }
-})
+});
 
 router.get('/ads/removed', checkIfLoggedIn, async (req, res, next) => {
   const user = req.session.currentUser;
@@ -109,48 +113,98 @@ router.put('/ad/:id', checkIfLoggedIn, async (req, res, next) => {
   try {
     const ad = await Ad.findOne({_id: id}).populate('category');
     const {recently_viewed} = await User.findOne({'_id': user._id});
-    if (recently_viewed.length > 6) {
-      recently_viewed.pop()
+    const idvieweds = recently_viewed.map((adViewed) => adViewed._id.toString())
+    if (!idvieweds.includes(ad._id.toString())){
+      if (recently_viewed.length > 6) {
+        recently_viewed.pop()
+      }
+      recently_viewed.unshift(ad);
+      const userUpdated = await User.findOneAndUpdate(
+        {'_id': user._id},
+        {recently_viewed: recently_viewed}
+      );
+      return res.status(200).json({userUpdated});
     }
-    recently_viewed.unshift(ad);
-    const userUpdated = await User.findOneAndUpdate(
-      {'_id': user._id},
-      {recently_viewed: recently_viewed}
-    );
-    return res.status(200).json({userUpdated});
   } catch (error) {
     next(error);
   }
 });
 
-router.put('/buyTokens', async (req, res, next) => {
+router.put('/buyTokens', checkIfLoggedIn, async (req, res, next) => {
   const {quantity} = req.body;
   const {currentUser} = req.session;
   try {
-    await User.findOneAndUpdate({ _id: currentUser._id }, { $inc: { 'wallet.tokens': quantity } });
+    await User.findOneAndUpdate({_id: currentUser._id}, {$inc: {'wallet.tokens': quantity}});
     return res.status(200).json({response: true});
   } catch (e) {
     return next(e)
   }
-  
+
+});
+
+router.put('/setReview', checkIfLoggedIn, async (req, res, next) => {
+  const {appointment, valoration, stars, mediationText, showMediationForm} = req.body;
+  const {currentUser} = req.session;
+  try {
+    const workingId = appointment.buyer._id === currentUser._id ? appointment.seller._id : appointment.buyer._id;
+    if (appointment.buyer._id === currentUser._id) {
+      await Appointment.findOneAndUpdate({_id: appointment._id}, {hasBuyerReviewed: true});
+      if (showMediationForm) {
+        await new Mediation({appointment: appointment._id, buyerMessage: mediationText}).save();
+      } else {
+        const seller = await User.findOne({_id: appointment.seller._id});
+        seller.wallet.tokens += appointment.pendingTokens;
+        await seller.save();
+        await Appointment.findOneAndUpdate({_id: appointment._id}, {pendingTokens: 0});
+      }
+    } else {
+      await Appointment.findOneAndUpdate({_id: appointment._id}, {hasSellerReviewed: true});
+    }
+    const userToReview = await User.findOne({_id: workingId});
+    userToReview.review.push({
+      user: currentUser._id,
+      ad: appointment.ad._id,
+      content: valoration,
+      rating: stars,
+    });
+    await userToReview.save();
+
+
+    res.status(200).json();
+  } catch (e) {
+    return next(e)
+  }
+
 });
 
 
 router.put('/notifications/', checkIfLoggedIn, async (req, res, next) => {
-  const { currentUser } = req.session;
+  const {currentUser} = req.session;
   try {
-    const { notifications } = await User.findById({_id: currentUser._id})
+    const {notifications} = await User.findById({_id: currentUser._id});
     for (let i = 0; i < notifications.length; i++) {
       const notification = notifications[i];
-      notification.isReaded = true; 
-      
+      notification.isReaded = true;
+
     }
-    await User.findOneAndUpdate({_id: currentUser._id}, {notifications})
-    return res.status(200).json({ response: true });
-  } catch(e){
+    await User.findOneAndUpdate({_id: currentUser._id}, {notifications});
+    return res.status(200).json({response: true});
+  } catch (e) {
     return next(e)
   }
 });
+
+router.get('/rewards/ads', checkIfLoggedIn, async (req, res, next) => {
+  const { currentUser } = req.session;
+  try {
+    const ads = await Ad.find({ owner: currentUser._id, deleted_at: null });
+    let numAds = ads.length;
+    const reward = await Reward.find({"type": "ad", "total": { $gte: numAds}});
+    return res.status(200).json(reward[0])
+  } catch (error) {
+    next(error);
+  }
+})
 
 
 module.exports = router;

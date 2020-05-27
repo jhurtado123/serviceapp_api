@@ -1,0 +1,142 @@
+{{#extend "stylesheets"}}
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+{{/extend}}
+
+<div class="container-fluid">
+    <div class="row bg-title">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+            <h4 class="page-title">Dashboard</h4></div>
+        <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+            <ol class="breadcrumb">
+                <li><a href="#">Anuncios publicados</a></li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Anuncios</h3>
+                <div class="table-responsive">
+                    <table class="table" id="table">
+                        <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Propietario</th>
+                            <th>Precio</th>
+                            <th>Código postal</th>
+                            <th>Categoría</th>
+                            <th>Borrado</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{# if ads.length }}
+                            {{#each ads}}
+                                <tr>
+                                    <td>{{this.name}}</td>
+                                    <td>{{this.owner.name}}</td>
+                                    <td>
+                                        {{this.price}}
+                                    </td>
+                                    <td>{{#if this.postalCode}}{{this.postalCode}}{{/if}}</td>
+                                    <td>{{this.category.name}}</td>
+                                    <td>{{#if this.deleted_at}}Si{{else}}No{{/if}}</td>
+                                    <td class="actions">
+                                        <img src="/admin/images/edit.png" class="action-edit" data-id="{{this.id}}"/>
+                                        {{#if this.deleted_at}}
+                                            <form action="/admin/ads/{{this._id}}/recover" method="post">
+                                                <img src="/admin/images/recover.png" class="action-recover"
+                                                     data-id="{{this.id}}" onclick="this.parentNode.submit()"/>
+                                            </form>
+                                        {{else}}
+                                            <form action="/admin/ads/{{this._id}}/remove" method="post">
+                                                <img src="/admin/images/trash.png" class="action-remove"
+                                                     data-id="{{this.id}}" onclick="this.parentNode.submit()"/>
+                                            </form>
+                                        {{/if}}
+
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        {{/if}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="editAdModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm">
+                <div class="modal-header">
+                    <h4 class="modal-title">Editar anuncio</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Propietario</label>
+                        <select name="owner">
+                            {{#each users}}
+                                <option value="{{this._id}}">{{this.name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Titulo</label>
+                        <input name="name" type="text"/>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea name="description" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección</label>
+                        <input name="address" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Número</label>
+                        <input name="number" type="number">
+                    </div>
+                    <div class="form-group">
+                        <label>Código postal</label>
+                        <input name="postalCode" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input name="price" type="number">
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select name="category">
+                            {{#each categories}}
+                                <option value="{{this._id}}">{{this.name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Borrado</label>
+                        <select name="deleted_at">
+                            <option value="1">Si</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="update">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{{#extend "javascripts"}}
+    <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="/admin/javascript/ads/ads.js"></script>
+{{/extend}}
+

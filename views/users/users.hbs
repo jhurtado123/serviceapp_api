@@ -1,0 +1,122 @@
+{{#extend "stylesheets"}}
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+{{/extend}}
+
+<div class="container-fluid">
+    <div class="row bg-title">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+            <h4 class="page-title">Dashboard</h4></div>
+        <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+            <ol class="breadcrumb">
+                <li><a href="#">Usuarios registrados</a></li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Usuarios</h3>
+                <div class="table-responsive">
+                    <table class="table" id="table">
+                        <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Nombre</th>
+                            <th>Roles</th>
+                            <th>Puntos</th>
+                            <th>Ciudad</th>
+                            <th>Serkens</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{# if users.length }}
+                            {{#each users}}
+                                <tr>
+                                    <td>{{this.username}}</td>
+                                    <td>{{this.name}}</td>
+                                    <td>
+                                        {{#each this.role}}
+                                            {{this}}
+                                        {{/each}}
+                                    </td>
+                                    <td>{{this.points}}</td>
+                                    <td>{{this.city}}</td>
+                                    <td>{{this.wallet.tokens}}</td>
+                                    <td class="actions">
+                                        <img src="/admin/images/edit.png" class="action-edit" data-id="{{this.id}}"/>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        {{/if}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="editUserModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm">
+                <div class="modal-header">
+                    <h4 class="modal-title">Editar usuario</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input name="name" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea name="description" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección</label>
+                        <input name="address" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Número</label>
+                        <input name="number" type="number">
+                    </div>
+                    <div class="form-group">
+                        <label>Ciudad</label>
+                        <input name="city" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Código postal</label>
+                        <input name="postalcode" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select name="role">
+                            <option value="ROLE_USER">ROLE_USER</option>
+                            <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Serkens</label>
+                        <input name="tokens" type="number">
+                    </div>
+                    <div class="form-group">
+                        <label>Puntos de nivel</label>
+                        <input name="points" type="number">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="update">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{#extend "javascripts"}}
+    <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="/admin/javascript/users/users.js"></script>
+{{/extend}}
+
