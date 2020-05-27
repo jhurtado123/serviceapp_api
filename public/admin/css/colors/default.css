@@ -23,6 +23,7 @@ body {
 }
 .top-left-part {
   background: #fff;
+  height: 61px;
 }
 .top-left-part .dark-logo {
   display: none;
@@ -35,7 +36,7 @@ body {
   color: #ffffff;
 }
 .navbar-header {
-  background: #2f323e;
+  background: #472889;
 }
 .navbar-top-links > li > a {
   color: #ffffff;
@@ -52,7 +53,7 @@ body {
 }
 /*Bread Crumb*/
 .bg-title .breadcrumb .active {
-  color: #41b3f9;
+  color: #472889;
 }
 /*Sidebar*/
 .sidebar {
@@ -60,7 +61,7 @@ body {
   box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
 }
 .sidebar .label-custom {
-  background: #01c0c8;
+  background: #472889;
 }
 #side-menu li a {
   color: #54667a;
@@ -79,11 +80,11 @@ body {
 #side-menu > li > a.active {
   background: transperant;
   color: #54667a;
-  border-left: 3px solid #41b3f9;
+  border-left: 3px solid #472889;
   font-weight: 500;
 }
 #side-menu ul > li > a:hover {
-  color: #41b3f9;
+  color: #472889;
 }
 #side-menu ul > li > a.active {
   color: #54667a;
@@ -115,7 +116,7 @@ body {
 .customtab li.active a,
 .customtab li.active a:hover,
 .customtab li.active a:focus {
-  border-bottom: 2px solid #41b3f9;
+  border-bottom: 2px solid #472889;
   color: #41b3f9;
 }
 .tabs-vertical li.active a,
@@ -160,4 +161,12 @@ body {
 .panel-themecolor a:hover,
 .panel-theme a:hover {
   color: #0791e6;
+}
+
+#table_wrapper th {
+  border-bottom: 1px solid #472889;
+}
+.profile-pic .img-circle {
+  width: 50px!important;
+  height: 50px!important;
 }
