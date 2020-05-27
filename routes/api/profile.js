@@ -197,9 +197,9 @@ router.put('/notifications/', checkIfLoggedIn, async (req, res, next) => {
 router.get('/rewards/ads', checkIfLoggedIn, async (req, res, next) => {
   const { currentUser } = req.session;
   try {
-    const ads = await Ad.find({ owner: currentUser._id, deleted_at: null })
+    const ads = await Ad.find({ owner: currentUser._id, deleted_at: null });
     let numAds = ads.length;
-    const reward = await Reward.find({"type": "ad", "total": { $gte: numAds}})
+    const reward = await Reward.find({"type": "ad", "total": { $gte: numAds}});
     return res.status(200).json(reward[0])
   } catch (error) {
     next(error);
