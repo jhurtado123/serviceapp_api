@@ -13,7 +13,7 @@ module.exports = async function createNofifications(id, options) {
       if(!notification.isReaded){
         notificationNotReaded.push(notification)
       }
-    }
+    } 
     Object.keys(socket.io.sockets.connected).forEach((socketId) => {
       const socketCustomID = socket.io.sockets.connected[socketId].id;
       if (socketCustomID == id) {

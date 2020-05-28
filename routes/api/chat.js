@@ -45,7 +45,6 @@ router.get('/:id', autMiddleware.checkIfLoggedIn, async (req, res, next) => {
   try {
     await Message.update({chat: id, isReaded: false, sender: {$ne : currentUser}}, {$set: {isReaded: true}}, {"multi": true});
     const chat = await Chat.findOne({_id: id, deleted_at: null, $or: [{buyer: currentUser}, {seller: currentUser}]}).populate('ad seller buyer');
-
     return res.status(200).json({chat});
 
   } catch (e) {
