@@ -18,6 +18,7 @@ const searchRouter = require('./routes/api/search');
 const categoryRouter = require('./routes/api/categories');
 const chatRouter = require('./routes/api/chat');
 const appointmentsRouter = require('./routes/api/appointment');
+const settingsRouter = require('./routes/api/setting');
 const favoritesRouter = require('./routes/api/favorites');
 const autMiddleware = require('./middlewares/authMiddleware');
 const appointmentMiddleware = require('./middlewares/appointmentMiddelware');
@@ -26,6 +27,8 @@ const userAdminRouter = require('./routes/admin/users');
 const adAdminRouter = require('./routes/admin/ads');
 const categoriesAdminRouter = require('./routes/admin/categories');
 const levelsAdminRouter = require('./routes/admin/levels');
+const settingsAdminRouter = require('./routes/admin/settings');
+
 
 hbs = extend(hbs);
 
@@ -88,6 +91,7 @@ app.use('/favorites', appointmentMiddleware.changeAppointmentStatusIfFinished, f
 app.use('/appointments', appointmentMiddleware.changeAppointmentStatusIfFinished, appointmentsRouter);
 app.use('/ad', appointmentMiddleware.changeAppointmentStatusIfFinished, adRouter);
 app.use('/chats', appointmentMiddleware.changeAppointmentStatusIfFinished, chatRouter);
+app.use('/settings', appointmentMiddleware.changeAppointmentStatusIfFinished, settingsRouter);
 
 
 app.dynamicHelpers({
@@ -100,6 +104,9 @@ app.use('/admin/users', autMiddleware.checkIsGrantedRoleAdmin, userAdminRouter);
 app.use('/admin/ads', autMiddleware.checkIsGrantedRoleAdmin, adAdminRouter);
 app.use('/admin/categories', autMiddleware.checkIsGrantedRoleAdmin, categoriesAdminRouter);
 app.use('/admin/levels', autMiddleware.checkIsGrantedRoleAdmin, levelsAdminRouter);
+app.use('/admin/settings', autMiddleware.checkIsGrantedRoleAdmin, settingsAdminRouter);
+
+require('./middlewares/appHbsHelpers')(hbs);
 
 
 // catch 404 and forward to error handler

@@ -2,10 +2,10 @@
 
      //ct-visits
      new Chartist.Line('#ct-visits', {
-         labels: ['2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015'],
+         labels: ['Noviembre', 'Diciembre', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
          series: [
-    [5, 2, 7, 4, 5, 3, 5, 4]
-    , [2, 5, 2, 6, 2, 5, 2, 4]
+    [10, 15, 14, 16, 12, 8, 7, 4]
+    , [2, 5, 4, 9, 12, 16, 19, 29]
   ]
      }, {
          top: 0,
@@ -20,12 +20,33 @@
                  return (value / 1) + 'k';
              }
          },
-         showArea: true
+         showArea: false
      });
+
+   new Chartist.Line('#ct-services', {
+     labels: ['Noviembre', 'Diciembre', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
+     series: [
+       [50, 60, 75, 100, 160, 210, 260, 280]
+     ]
+   }, {
+     top: 0,
+     low: 1,
+     showPoint: true,
+     fullWidth: true,
+     plugins: [
+       Chartist.plugins.tooltip()
+     ],
+     axisY: {
+       labelInterpolationFnc: function (value) {
+         return (value / 1) ;
+       }
+     },
+     showArea: false
+   });
      // counter
      $(".counter").counterUp({
          delay: 100,
-         time: 1200
+         time: 1500
      });
 
      var sparklineLogin = function () {

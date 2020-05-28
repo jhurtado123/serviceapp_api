@@ -15,6 +15,7 @@
     <div class="row">
         <div class="col-md-12 col-lg-12 col-sm-12">
             <div class="white-box">
+                <div class="create-category add-new" data-toggle="modal" data-target="#createCategoryModal">Crear nuevo</div>
                 <h3 class="box-title">Niveles</h3>
                 <div class="table-responsive">
                     <table class="table" id="table">
@@ -35,7 +36,10 @@
                                     <td>{{this.maxpoints}}</td>
                                     <td class="actions">
                                         <img src="/admin/images/edit.png" class="action-edit" data-id="{{this.id}}"/>
-                                        <img src="/admin/images/trash.png" class="action-remove" data-id="{{this.id}}"/>
+                                        <form action="/admin/levels/{{this._id}}/remove" method="post">
+                                            <img src="/admin/images/trash.png" class="action-remove"
+                                                 data-id="{{this.id}}" onclick="this.parentNode.submit()"/>
+                                        </form>
                                     </td>
                                 </tr>
                             {{/each}}
@@ -48,8 +52,71 @@
     </div>
 </div>
 
+<div class="modal" id="createCategoryModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="createForm" method="post" action="/admin/levels/create">
+                <div class="modal-header">
+                    <h4 class="modal-title">Crear nivel</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Level</label>
+                        <input name="level" type="number"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Puntos mínimos</label>
+                        <input name="minpoints" type="number">
+                    </div>
+                    <div class="form-group">
+                        <label>Puntos máximos</label>
+                        <input name="maxpoints" type="number">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="update">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="editModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm">
+                <div class="modal-header">
+                    <h4 class="modal-title">Editar nivel</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nivel</label>
+                        <input name="level" disabled type="text"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Puntos mínimos</label>
+                        <input name="minpoints" type="number">
+                    </div>
+                    <div class="form-group">
+                        <label>Puntos máximos</label>
+                        <input name="maxpoints" type="number">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="update">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {{#extend "javascripts"}}
     <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="/admin/javascript/users/users.js"></script>
+    <script src="/admin/javascript/levels/levels.js"></script>
 {{/extend}}
 

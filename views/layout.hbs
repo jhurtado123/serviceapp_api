@@ -46,6 +46,9 @@
                     <a class="profile-pic" href="#"> <img src="/uploads/profile/{{currentUser._id}}/{{currentUser.profile_image}}" alt="user-img"
                                                           width="36" class="img-circle"><b class="hidden-xs">{{currentUser.name}}</b></a>
                 </li>
+                <li>
+                    <a href="/logout" onclick="setTimeout(() => location.reload(),1000)">Logout</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -75,7 +78,7 @@
                     <a href="blank.html" class="waves-effect"><i class="fa fa-columns fa-fw" aria-hidden="true"></i>Mediaciones</a>
                 </li>
                 <li>
-                    <a href="404.html" class="waves-effect"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i>Configuración</a>
+                    <a href="/admin/settings" class="waves-effect"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i>Configuración</a>
                 </li>
 
             </ul>
