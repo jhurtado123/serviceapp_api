@@ -144,13 +144,7 @@ router.put('/buyTokens', async (req, res, next) => {
 router.put('/notifications/', checkIfLoggedIn, async (req, res, next) => {
   const { currentUser } = req.session;
   try {
-    const { notifications } = await User.findById({_id: currentUser._id})
-    for (let i = 0; i < notifications.length; i++) {
-      const notification = notifications[i];
-      notification.isReaded = true; 
-      
-    }
-    await User.findOneAndUpdate({_id: currentUser._id}, {notifications})
+    await User.update({ _id: currentUser._id }, { $set: { "notifications.$[].isReaded": true } },)
     return res.status(200).json({ response: true });
   } catch(e){
     return next(e)
