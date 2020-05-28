@@ -106,6 +106,7 @@ app.use('/admin/categories', autMiddleware.checkIsGrantedRoleAdmin, categoriesAd
 app.use('/admin/levels', autMiddleware.checkIsGrantedRoleAdmin, levelsAdminRouter);
 app.use('/admin/settings', autMiddleware.checkIsGrantedRoleAdmin, settingsAdminRouter);
 
+require('./middlewares/appHbsHelpers')(hbs);
 
 
 // catch 404 and forward to error handler
