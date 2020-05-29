@@ -26,6 +26,7 @@ const adminRouter = require('./routes/admin/index');
 const userAdminRouter = require('./routes/admin/users');
 const adAdminRouter = require('./routes/admin/ads');
 const categoriesAdminRouter = require('./routes/admin/categories');
+const mediationsAdminRouter = require('./routes/admin/mediations');
 const levelsAdminRouter = require('./routes/admin/levels');
 const settingsAdminRouter = require('./routes/admin/settings');
 
@@ -103,6 +104,7 @@ app.use('/admin', autMiddleware.checkIsGrantedRoleAdmin, adminRouter);
 app.use('/admin/users', autMiddleware.checkIsGrantedRoleAdmin, userAdminRouter);
 app.use('/admin/ads', autMiddleware.checkIsGrantedRoleAdmin, adAdminRouter);
 app.use('/admin/categories', autMiddleware.checkIsGrantedRoleAdmin, categoriesAdminRouter);
+app.use('/admin/mediations', autMiddleware.checkIsGrantedRoleAdmin, mediationsAdminRouter);
 app.use('/admin/levels', autMiddleware.checkIsGrantedRoleAdmin, levelsAdminRouter);
 app.use('/admin/settings', autMiddleware.checkIsGrantedRoleAdmin, settingsAdminRouter);
 

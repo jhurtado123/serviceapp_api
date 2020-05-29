@@ -5,8 +5,8 @@ const User = require('../../models/User');
 
 router.get('/', async (req, res, next) => {
   try {
-    const appointments = await Appointment.find().sort({created_at: -1}).limit(10).populate('ad');
-    const lastUsers = await User.find().sort({created_at: -1}).limit(7);
+    const appointments = await Appointment.find().sort({createdAt: -1}).limit(10).populate('ad');
+    const lastUsers = await User.find().sort({createdAt: -1}).limit(7);
     res.render('index', {appointments, lastUsers});
   } catch (e) {
     return next(e);
