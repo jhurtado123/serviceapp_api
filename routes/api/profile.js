@@ -11,7 +11,7 @@ const Mediation = require('../../models/Mediation');
 const Reward = require('../../models/Reward');
 const {checkIfLoggedIn} = require('../../middlewares/authMiddleware');
 const {checkProfileCompletedReward} = require('../../middlewares/rewardsMiddleware');
-
+const createNofifications = require ('../../middlewares/notificationMiddleware');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -48,7 +48,7 @@ router.put("/edit", upload.any(), checkIfLoggedIn, async (req, res, next) => {
     images.push(file.filename);
     profile_image = file.filename
   });
-  checkProfileCompletedReward(currentUser._id, {name, description, address})
+  checkProfileCompletedReward(currentUser._id, {name, description, address});
   try {
     const newUser = await User.findOneAndUpdate(
       {'_id': currentUser._id},
@@ -150,6 +150,7 @@ router.put('/setReview', checkIfLoggedIn, async (req, res, next) => {
     if (appointment.buyer._id === currentUser._id) {
       await Appointment.findOneAndUpdate({_id: appointment._id}, {hasBuyerReviewed: true});
       if (showMediationForm) {
+        createNofifications(appointment.seller._id,{'title': `${appointment.buyer.name} ha inciado una mediación`, 'href': `#`, 'type': 'mediation'});
         await new Mediation({appointment: appointment._id, buyerMessage: mediationText}).save();
       } else {
         const seller = await User.findOne({_id: appointment.seller._id});
@@ -181,15 +182,9 @@ router.put('/setReview', checkIfLoggedIn, async (req, res, next) => {
 router.put('/notifications/', checkIfLoggedIn, async (req, res, next) => {
   const {currentUser} = req.session;
   try {
-    const {notifications} = await User.findById({_id: currentUser._id});
-    for (let i = 0; i < notifications.length; i++) {
-      const notification = notifications[i];
-      notification.isReaded = true;
-
-    }
-    await User.findOneAndUpdate({_id: currentUser._id}, {notifications});
-    return res.status(200).json({response: true});
-  } catch (e) {
+    await User.update({ _id: currentUser._id }, { $set: { "notifications.$[].isReaded": true } },)
+    return res.status(200).json({ response: true });
+  } catch(e){
     return next(e)
   }
 });

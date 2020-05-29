@@ -7,7 +7,7 @@
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 }
 .table .actions img {
     margin: 0 5px;
@@ -105,4 +105,15 @@
 }
 .ct-end.ct-label {
 
+}
+
+#resolveModal .users-serkens-resolve {
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+#resolveModal .users-serkens-resolve span {
+    font-size: 22px;
+}
+#resolveModal input[type=range] {
+    margin-top: 15px;
 }

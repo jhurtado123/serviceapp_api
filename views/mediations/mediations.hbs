@@ -1,0 +1,125 @@
+{{#extend "stylesheets"}}
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+{{/extend}}
+
+<div class="container-fluid">
+    <div class="row bg-title">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+            <h4 class="page-title">Dashboard</h4></div>
+        <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+            <ol class="breadcrumb">
+                <li><a href="#">Mediaciones</a></li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Mediaciones</h3>
+                <div class="table-responsive">
+                    <table class="table" id="table">
+                        <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Anuncio</th>
+                            <th>Comprador</th>
+                            <th>Vendedor</th>
+                            <th>Serkens congelados</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#each mediations}}
+                            <tr>
+                                <td>{{this.status}}</td>
+                                <td>{{this.appointment.ad.name}}</td>
+                                <td>{{this.appointment.buyer.name}}</td>
+                                <td>{{this.appointment.seller.name}}</td>
+                                <td>{{this.appointment.pendingTokens}}</td>
+                                <td class="actions">
+                                    <img src="/admin/images/eye.png" class="action-show" data-id="{{this.id}}"/>
+                                    <img src="/admin/images/solve.png" class="action-resolve"
+                                         data-pendingTokens="{{this.appointment.pendingTokens}}" data-id="{{this.id}}"/>
+                                </td>
+                            </tr>
+                        {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="viewModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ver mediación </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Estado</label>
+                    <input name="status" disabled type="text"/>
+                </div>
+                <div class="form-group">
+                    <label>Anuncio</label>
+                    <input name="ad" disabled type="text"/>
+                </div>
+                <div class="form-group">
+                    <label>Serkens pagados</label>
+                    <input name="pendingTokens" disabled type="text"/>
+                </div>
+                <div class="form-group">
+                    <label>Vendedor</label>
+                    <input name="seller" disabled type="text"/>
+                </div>
+                <div class="form-group">
+                    <label>Comprador</label>
+                    <input name="buyer" disabled type="text"/>
+                </div>
+                <div class="form-group">
+                    <label>Mensaje del comprador</label>
+                    <div id="buyerMessage"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="cancel" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="resolveModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="resolveModalForm">
+                <div class="modal-header">
+                    <h4 class="modal-title">Resolver mediación</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="users-serkens-resolve">
+                        <div class="buyer"><span>0</span> Serkens retornados al comprador.</div>
+                        <div class="seller"><span>0</span> Serkens pagados al vendedor.</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Rango de Serkens</label>
+                        <input type="range" min="0" id="rangeValue" name="serkensForSeller">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="update">Resolver</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{#extend "javascripts"}}
+    <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="/admin/javascript/mediations/mediations.js"></script>
+{{/extend}}
+
