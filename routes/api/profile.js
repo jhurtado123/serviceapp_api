@@ -30,8 +30,8 @@ const upload = multer({storage: storage});
 router.get('/level', checkIfLoggedIn, async (req, res, next) => {
   const {currentUser} = req.session;
   try {
-    const {points} = await User.findById(currentUser._id)
-    const level = await Level.find({"maxpoints": {$gte: points}, "minpoints": {$lte: points}})
+    const {points} = await User.findById(currentUser._id);
+    const level = await Level.find({"maxpoints": {$gte: points}, "minpoints": {$lte: points}});
     return res.status(200).json(level)
   } catch (error) {
     next(error);
@@ -43,7 +43,7 @@ router.put("/edit", upload.any(), checkIfLoggedIn, async (req, res, next) => {
   const files = req.files;
   let {name, description, address, number, postalcode, lat, lng} = req.body;
   const images = [];
-  let profile_image = ''
+  let profile_image = '';
   files.forEach((file) => {
     images.push(file.filename);
     profile_image = file.filename
@@ -182,7 +182,7 @@ router.put('/setReview', checkIfLoggedIn, async (req, res, next) => {
 router.put('/notifications/', checkIfLoggedIn, async (req, res, next) => {
   const {currentUser} = req.session;
   try {
-    await User.update({ _id: currentUser._id }, { $set: { "notifications.$[].isReaded": true } },)
+    await User.update({ _id: currentUser._id }, { $set: { "notifications.$[].isReaded": true } });
     return res.status(200).json({ response: true });
   } catch(e){
     return next(e)
@@ -199,7 +199,18 @@ router.get('/rewards/ads', checkIfLoggedIn, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-})
+});
+
+router.get('/:id/level', async (req, res, nex) => {
+  const {id} = req.params;
+  try {
+    const {points} = await User.findOne({_id: id});
+    const {level} = await Level.findOne({"maxpoints": {$gte: points}, "minpoints": {$lte: points}});
+    return res.status(200).json({level})
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 module.exports = router;
