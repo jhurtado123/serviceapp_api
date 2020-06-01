@@ -194,7 +194,9 @@ router.get('/rewards/ads', checkIfLoggedIn, async (req, res, next) => {
   try {
     const ads = await Ad.find({ owner: currentUser._id, deleted_at: null });
     let numAds = ads.length;
-    const reward = await Reward.find({"type": "ad", "total": { $gte: numAds}});
+    console.log("NUMADS", numAds)
+    const reward = await Reward.find({"type": "ad", "total": { $gt: numAds}}).sort({total: 1});
+    console.log("RECOMEPNSAS", reward)
     return res.status(200).json(reward[0])
   } catch (error) {
     next(error);

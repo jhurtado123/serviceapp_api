@@ -28,6 +28,7 @@ const rewardsMiddleware = {
       const user = await User.findOne({ '_id': id })
       let numAds = (ads.length)
       const reward = await Reward.find({ "type": "ad", "total": { $lte: numAds }})
+      console.log("RECOMEPNSAS", reward)
       if (user.rewards.includes(reward[0]._id) === false) {
         user.rewards.push(reward[0])
         let newPoints = user.points + reward[0].points
