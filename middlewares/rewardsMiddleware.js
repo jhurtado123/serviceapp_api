@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Reward = require('../models/Reward');
 const Ad = require('../models/Ad');
+const Level = require('../models/Level');
 const createNofifications = require('../middlewares/notificationMiddleware');
 
 const rewardsMiddleware = {
@@ -10,10 +11,17 @@ const rewardsMiddleware = {
     try{
       const user = await User.findOne({'_id': id})
       const reward = await Reward.findOne({'type': 'profile'})
-      let newPoints = user.points + reward.points
+      const level  = await Level.findOne({ "maxpoints": { $gte: user.points }, "minpoints": { $lte: user.points } });
+      let newPoints = user.points + reward.points;
       if (user.rewards.includes(reward._id) === false ){
         user.rewards.push(reward)
-            await User.findOneAndUpdate({'_id': id}, {'rewards': user.rewards, 'points': newPoints})
+        if (newPoints > level.maxpoints || newPoints == level.maxpoints) {
+          let newSerkens = user.wallet.tokens + level.reward
+          console.log(newSerkens)
+          await User.findOneAndUpdate({ '_id': user._id }, { 'rewards': user.rewards, 'points': newPoints, 'wallet': {'tokens': newSerkens} })
+        } else {
+          await User.findOneAndUpdate({'_id': id}, {'rewards': user.rewards, 'points': newPoints})
+        }
         createNofifications(id, { 'title': 'Recompensa por completar tu perfil', 'href': '/profile/rewards', 'type': 'reward'})
         }
       }
@@ -26,13 +34,18 @@ const rewardsMiddleware = {
     try {
       const ads = await Ad.find({ owner: id }).populate("owner");
       const user = await User.findOne({ '_id': id })
+      const level = await Level.findOne({ "maxpoints": { $gte: user.points }, "minpoints": { $lte: user.points } });
       let numAds = (ads.length)
       const reward = await Reward.find({ "type": "ad", "total": { $lte: numAds }})
-      console.log("RECOMEPNSAS", reward)
       if (user.rewards.includes(reward[0]._id) === false) {
         user.rewards.push(reward[0])
-        let newPoints = user.points + reward[0].points
-        await User.findOneAndUpdate({ '_id': user._id }, { 'rewards': user.rewards, 'points': newPoints })
+        let newPoints = user.points + reward[0].points;
+        if (newPoints > level.maxpoints || newPoints == level.maxpoints) {
+          let newSerkens = user.wallet.tokens + level.reward
+          await User.findOneAndUpdate({ '_id': user._id }, { 'rewards': user.rewards, 'points': newPoints, 'wallet': {'tokens': newSerkens} })
+        } else {
+          await User.findOneAndUpdate({ '_id': user._id }, { 'rewards': user.rewards, 'points': newPoints })
+        }
         createNofifications(id, { 'title': `Recompensa por ${numAds} anuncios`, 'href': '/profile/rewards', 'type': 'reward' })
       }
     }
