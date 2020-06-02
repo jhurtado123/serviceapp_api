@@ -117,3 +117,19 @@
 #resolveModal input[type=range] {
     margin-top: 15px;
 }
+.back-small-logo {
+    width: 35px;
+    display: none;
+    margin: 0 auto;
+}
+@media screen and (max-width: 760px) {
+    .back-small-logo {
+        display: inline-block;
+    }
+}
+.back-logo {
+    width: 45%;
+}
+.ct-line {
+    stroke-width: 2px;
+}
