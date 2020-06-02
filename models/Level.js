@@ -6,7 +6,8 @@ const levelSchema = new  Schema (
   {
     level: Number,
     minpoints: Number,
-    maxpoints: Number
+    maxpoints: Number,
+    reward: Number,
   }
 );
 
