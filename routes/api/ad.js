@@ -117,7 +117,7 @@ router.put('/:id', autMiddleware.checkIfLoggedIn,  adMiddleware.isOwner,  upload
   files.forEach(file => images.push(file.filename));
   const owner = req.session.currentUser;
   try {
-    const ad = await Ad.findOneAndUpdate({'_id': id}, {name, owner: owner._id, description, price, category, tags, number, address, postalCode, location: {type: 'Point', coordinates: [lat, lng] }, images})
+    const ad = await Ad.findOneAndUpdate({'_id': id}, {name, owner: owner._id, description, price, category, tags, number, address, postalCode, location: {type: 'Point', coordinates: [lat, lng] }})
     const adDirectory = `./public/uploads/adImages/${ad._id}`;
       try {
            fs.readdir(adDirectory, (err, files) => {
@@ -131,11 +131,15 @@ router.put('/:id', autMiddleware.checkIfLoggedIn,  adMiddleware.isOwner,  upload
         } catch (e) {
             return next()
         }
+        ad.images = [];
          files.forEach(file => {
               fs.rename(file.path, `${adDirectory}/${file.filename}`, function (err) {
                 if (err)  return next(err);
-              })
+              });
+              ad.images.push(file.filename);
          });
+    await ad.save();
+
     return res.status(200).json({ad: true});
   }
   catch (error) {
