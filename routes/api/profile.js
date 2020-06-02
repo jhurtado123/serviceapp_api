@@ -36,7 +36,7 @@ router.get('/level', checkIfLoggedIn, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-})
+});
 
 router.put("/edit", upload.any(), checkIfLoggedIn, async (req, res, next) => {
   const {currentUser} = req.session;
