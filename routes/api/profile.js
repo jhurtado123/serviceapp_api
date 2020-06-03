@@ -43,7 +43,6 @@ router.put("/edit", upload.any(), checkIfLoggedIn, async (req, res, next) => {
   const files = req.files;
   let {name, description, address, number, postalcode, lat, lng} = req.body;
   const images = [];
-  let profile_image = '';
   files.forEach((file) => {
     images.push(file.filename);
     profile_image = file.filename
