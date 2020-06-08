@@ -15,8 +15,6 @@ async function changeAppointmentStatusIfFinished(req, res, next) {
   now = new Date(now.setHours(now.getHours()+2));
   await Appointment.findOneAndUpdate({'status': 'active', $or: [{'buyer': userId, date : {$lt: now}}, {'seller': userId, date : {$lt: now}}]}, {status: 'finished'}).populate('buyer seller')
     .then(async appointment => {
-        //appointment.status = 'finished';
-        //await appointment.save();
         await notificationsSend(appointment.seller._id, { title: 'Servicio finalizado', href: appointment._id, type: 'appointment-finished' });
         await notificationsSend(appointment.buyer._id, { title: 'Servicio finalizado', href: appointment._id, type: 'appointment-finished' });
       return next();
