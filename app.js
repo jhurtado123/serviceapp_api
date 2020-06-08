@@ -10,7 +10,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 let hbs = require('hbs');
 const extend = require('handlebars-extend-block');
-const indexRouter = require('./routes/api/index');
 const profileRouter = require('./routes/api/profile');
 const authRouter = require("./routes/api/auth");
 const adRouter = require('./routes/api/ad');
